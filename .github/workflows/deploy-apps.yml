@@ -1,0 +1,37 @@
+name: deploy-infrastructure
+on:
+  workflow_dispatch:
+    inputs:
+      deploymentName:
+        description: 'Deployment name'     
+        required: true
+        default: 'dzrunner3'
+      version:
+        description: 'App version'     
+        required: true
+        default: 'latest'
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    working-directory: scripts
+
+jobs:
+  deploy_infra:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+    - uses: actions/checkout@v2
+    - name: 'Az CLI login'
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: 'Run az commands'
+      run: |
+        chmod +x ./deploy-apps.sh
+        ./deploy-apps.sh ${{ github.event.inputs.deploymentName }} ${{ github.event.inputs.version }} ${{ github.repository_owner }}
