@@ -1,0 +1,15 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: lock
+spec:
+  name: lock
+  type: state.azure.tablestorage
+  version: v1
+  metadata:
+  - name: accountName
+    value: dzgaming
+  - name: accountKey
+    value: "fHATCyJssZKFwue3R4/+StEu4Vu9PflWicVfvWEkQ0X+mX2weVtlpc26TDS7W8xkGJA2yZdAU/ws2QEAbfOjng=="
+  - name: tableName
+    value: locks

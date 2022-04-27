@@ -1,0 +1,17 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: queue
+spec:
+  name: queue
+  type: bindings.azure.storagequeues
+  version: v1
+  metadata:
+  - name: storageAccount
+    value: dzgaming
+  - name: storageAccessKey
+    value: "fHATCyJssZKFwue3R4/+StEu4Vu9PflWicVfvWEkQ0X+mX2weVtlpc26TDS7W8xkGJA2yZdAU/ws2QEAbfOjng=="
+  - name: queue
+    value: requests
+  - name: decodeBase64
+    value: "true"

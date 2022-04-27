@@ -1,0 +1,26 @@
+// A launch configuration that compiles the extension and then opens it inside a new window
+// Use IntelliSense to learn about possible attributes.
+// Hover to view descriptions of existing attributes.
+// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "preLaunchTask": "quarkus:dev (src/Engine)",
+            "type": "java",
+            "request": "attach",
+            "hostName": "localhost",
+            "name": "Debug Quarkus application (src/Engine)",
+            "port": 5005
+        },
+        {
+            "preLaunchTask": "daprd-debug",
+            "type": "java",
+            "request": "attach",
+            "hostName": "localhost",
+            "name": "Debug Quarkus application (src/Engine) with Dapr",
+            "port": 5005,
+            "postDebugTask": "daprd-down"
+        }
+    ]
+}
