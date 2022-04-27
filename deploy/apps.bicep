@@ -14,12 +14,9 @@ module storage 'storage.bicep' = {
 module appqueueworker 'app-queue-worker.bicep' = {
   name: 'container-app-queue-worker'
   params: {
-    containerRegistryPath: 'ghcr.io/${containerRegistryOwner}/container-apps/optimizer:${imageTag}'
+    containerRegistryPath: 'ghcr.io/${containerRegistryOwner}/container-apps/engine:${imageTag}'
     environmentName: environmentName
     storageAccountName: storage.outputs.storageAccountName
     storageAccountKey: storage.outputs.storageAccountKey
   }
 }
-
-
-// az deployment group create -g dzca15cgithub -f ./deploy/apps.bicep -p explorerImageTag=latest -p calculatorImageTag=latest  -p containerRegistryOwner=denniszielke

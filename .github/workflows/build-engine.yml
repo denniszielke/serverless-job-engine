@@ -41,8 +41,6 @@ jobs:
       - name: mvn clean verify -Pnative
         run: $MVN clean verify -Pnative
   build-native:
-    if: github.ref == 'refs/heads/master'
-    needs: test-native
     runs-on: ubuntu-latest
     env:
       MVN: mvn --show-version --batch-mode
