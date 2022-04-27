@@ -1,7 +1,10 @@
 package org.acme;
 
 import java.net.InetAddress;
-
+import java.util.Calendar;  
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +26,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 
 import reactor.core.publisher.Mono;
+
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import io.vertx.core.json.JsonObject;
 
@@ -37,10 +42,12 @@ public class QueueResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response receive() {
+    public Response receive(String body) {
 
         String localHostName = null;
         String localHostAddress = null;
+
+        logger.info("Found body: " + body);
 
         try {
             InetAddress address = InetAddress.getLocalHost();
@@ -69,14 +76,25 @@ public class QueueResource {
             }
 
 
-            TimeUnit.MILLISECONDS.sleep(5000);
+            TimeUnit.MILLISECONDS.sleep(10000);
+            
+            String message = "my message from " + body + " has been processed on host " + localHostName;
+            byte[] bytes = message.getBytes();
+            byte[] encodedBytes = Base64.getUrlEncoder().encode(bytes);
+            Calendar calendar = Calendar.getInstance();
+            long seconds = calendar.getTimeInMillis();
+            String blobName = Long.toString(seconds);
+            Map<String,String> metadata = new HashMap<>();
+            metadata.put("blobName", blobName + ".txt");
 
+            daprClient.invokeBinding("output", "create", encodedBytes, metadata).block();
             
 
             logger.info("marking engine instance as free");
             daprClient.saveState("lock", localHostName, "free").block(); 
         }catch (Exception e) {
             logger.error("Something went wrong.");
+            logger.error(e.toString());
         }
 
         return Response.ok("ok").build();

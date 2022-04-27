@@ -15,3 +15,5 @@ spec:
     value: requests
   - name: decodeBase64
     value: "true"
+  - name: route
+    value: /receive
