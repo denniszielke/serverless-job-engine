@@ -5,6 +5,40 @@ param storageAccountName string
 param storageAccountKey string
 param containerName string = 'output'
 param queueName string = 'requests'
+param stateName string = 'locks'
+
+resource state 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-preview' = {
+  name: '${environmentName}/state'
+  properties: {
+    componentType : 'state.azure.tablestorage'
+    version: 'v1'
+    ignoreErrors: false
+    initTimeout: '60s'
+    secrets: [
+      {
+        name: 'storage-key'
+        value: storageAccountKey
+      }
+    ]
+    metadata : [
+      {
+        name: 'accountName'
+        value: storageAccountName
+      }
+      {
+        name: 'accountKey'
+        secretRef: 'storage-key'
+      }
+      {
+        name: 'tableName'
+        value: stateName
+      }
+    ]
+    scopes: [
+      'engine'
+    ]
+  }
+}
 
 resource bloboutput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-preview' = {
   name: '${environmentName}/bloboutput'
@@ -38,7 +72,7 @@ resource bloboutput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01
       }
     ]
     scopes: [
-      'optimizer'
+      'engine'
     ]
   }
 }
@@ -77,15 +111,19 @@ resource queueinput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01
         name: 'decodeBase64'
         value: 'true'
       }
+      {
+        name: 'route'
+        value: '/receive'
+      }
     ]
     scopes: [
-      'optimizer'
+      'engine'
     ]
   }
 }
 
 resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
-  name: 'optimizer'
+  name: 'engine'
   kind: 'containerapp'
   location: location
   properties: {
@@ -106,7 +144,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
       ]
       dapr: {
         enabled: true
-        appId: 'optimizer'
+        appId: 'engine'
         appPort: 6000
         appProtocol: 'http'
       }
@@ -115,7 +153,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
       containers: [
         {
           image: containerRegistryPath
-          name: 'optimizer'
+          name: 'engine'
           resources: {
             cpu: '2'
             memory: '4Gi'
@@ -125,7 +163,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
               type: 'liveness'
               httpGet: {
                 path: '/ping'
-                port: 6000
+                port: 8080
               }
               initialDelaySeconds: 5
               periodSeconds: 3
@@ -134,7 +172,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
               type: 'readiness'
               httpGet: {
                 path: '/ping'
-                port: 6000
+                port: 8080
               }
               initialDelaySeconds: 5
               periodSeconds: 3
