@@ -4,9 +4,11 @@
 
 ## Local installation
 
-### Install dapr locally
+### Install locally
 - Install dapr using this guide https://docs.dapr.io/getting-started/install-dapr-cli/
 - Init dapr using this guide https://docs.dapr.io/getting-started/install-dapr-selfhost/
+- Install Quarkus using this guide https://quarkus.io/get-started/
+- Add VSCode Extension for Quarkus https://marketplace.visualstudio.com/items?itemName=redhat.vscode-quarkus 
 
 ### Debug locally
 
