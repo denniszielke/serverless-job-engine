@@ -15,6 +15,7 @@ env:
 
 jobs:
   test-native:
+    if: true == false
     runs-on: ubuntu-latest
     env:
       MVN: mvn --show-version --batch-mode

@@ -132,7 +132,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
       activeRevisionsMode: 'single'
       ingress: {
         external: true
-        targetPort: 6000
+        targetPort: 8080
         allowInsecure: false    
         transport: 'Auto'
       }
@@ -145,7 +145,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
       dapr: {
         enabled: true
         appId: 'engine'
-        appPort: 6000
+        appPort: 8080
         appProtocol: 'http'
       }
     }

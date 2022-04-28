@@ -14,7 +14,7 @@ module storage 'storage.bicep' = {
 module appqueueworker 'app-queue-worker.bicep' = {
   name: 'container-app-queue-worker'
   params: {
-    containerRegistryPath: 'ghcr.io/${containerRegistryOwner}/container-apps/engine:${imageTag}'
+    containerRegistryPath: 'ghcr.io/${containerRegistryOwner}/serverless-job-engine/engine:${imageTag}'
     environmentName: environmentName
     storageAccountName: storage.outputs.storageAccountName
     storageAccountKey: storage.outputs.storageAccountKey
