@@ -1,4 +1,4 @@
-param location string = 'eastus' //resourceGroup().location
+param location string = resourceGroup().location
 param logAnalyticsWorkspaceName string 
 param appInsightsName string
 
