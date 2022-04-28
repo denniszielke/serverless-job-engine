@@ -29,5 +29,5 @@ else
 fi
 
 
-az deployment group create -g $DEPLOYMENT_NAME -f ../deploy/main.bicep \
+az deployment group create -g $DEPLOYMENT_NAME -f deploy/main.bicep \
           -p internalOnly=false

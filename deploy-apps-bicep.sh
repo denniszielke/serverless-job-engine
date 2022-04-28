@@ -21,6 +21,6 @@ fi
 
 AZURE_CORE_ONLY_SHOW_ERRORS="True"
 
-az deployment group create -g $DEPLOYMENT_NAME -f ../deploy/apps.bicep \
+az deployment group create -g $DEPLOYMENT_NAME -f deploy/apps.bicep \
           -p imageTag=$VERSION \
           -p containerRegistryOwner=$REGISTRY

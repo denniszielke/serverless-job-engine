@@ -14,20 +14,4 @@ public class PingResource {
     public String hello() {
         return "Pong!";
     }
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String host() {
-        String localHostName = null;
-
-        try {
-            InetAddress address = InetAddress.getLocalHost();
-            localHostName = address.getHostName();
-
-        }catch (Exception e) {
-            
-        }
-        
-        return localHostName;
-    }
 }
