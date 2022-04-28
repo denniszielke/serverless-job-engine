@@ -45,26 +45,27 @@ public class QueueResource {
     public Response receive(String body) {
 
         String localHostName = null;
-        String localHostAddress = null;
 
         logger.info("Found body: " + body);
+
+        Calendar calendar = Calendar.getInstance();
+        long seconds = calendar.getTimeInMillis();
+        String blobName = Long.toString(seconds);
 
         try {
             InetAddress address = InetAddress.getLocalHost();
             localHostName = address.getHostName();
-            localHostAddress = address.getHostAddress();
 
             logger.info("localHostName : "+localHostName);
-            logger.info("localHostAddress : "+localHostAddress);
         }catch (Exception e) {
-            logger.error("Something went wrong.");
+            logger.error("Something went wrong when retrieving hostname.");
         }
     
         try (DaprClient daprClient = (new DaprClientBuilder()).build()) {
 
             String currentState = daprClient.getState("lock", localHostName, String.class).block().getValue();
             
-            if(currentState == null || currentState.toString().isBlank() || currentState.toString().equals("free"))
+            if(currentState == null || currentState.isBlank() || currentState.equals("free"))
             {
                 logger.info("accepting new job");
                 daprClient.saveState("lock", localHostName, "busy").block(); 
@@ -75,25 +76,21 @@ public class QueueResource {
                 return Response.status(Status.BAD_REQUEST).build();
             }
 
-
             TimeUnit.MILLISECONDS.sleep(10000);
             
             String message = "my message from " + body + " has been processed on host " + localHostName;
             byte[] bytes = message.getBytes();
             byte[] encodedBytes = Base64.getUrlEncoder().encode(bytes);
-            Calendar calendar = Calendar.getInstance();
-            long seconds = calendar.getTimeInMillis();
-            String blobName = Long.toString(seconds);
+
             Map<String,String> metadata = new HashMap<>();
             metadata.put("blobName", blobName + ".txt");
 
             daprClient.invokeBinding("output", "create", encodedBytes, metadata).block();
             
-
             logger.info("marking engine instance as free");
             daprClient.saveState("lock", localHostName, "free").block(); 
         }catch (Exception e) {
-            logger.error("Something went wrong.");
+            logger.error("Something went wrong during dapr interaction.");
             logger.error(e.toString());
         }
 
