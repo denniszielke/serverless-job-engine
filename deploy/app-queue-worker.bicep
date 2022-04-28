@@ -40,8 +40,8 @@ resource state 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-prev
   }
 }
 
-resource bloboutput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-preview' = {
-  name: '${environmentName}/bloboutput'
+resource output 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-preview' = {
+  name: '${environmentName}/output'
   properties: {
     componentType : 'bindings.azure.blobstorage'
     version: 'v1'
@@ -191,7 +191,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
             }
             {
               name: 'VALUE'
-              value: '8080'
+              value: '1324'
             }
           ]
         }
