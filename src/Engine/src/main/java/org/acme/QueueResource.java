@@ -47,8 +47,6 @@ public class QueueResource {
     @Inject
     DaprClient dapr;
 
-    private OkHttpClient.Builder builder;
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
@@ -70,8 +68,6 @@ public class QueueResource {
         }catch (Exception e) {
             logger.error("Something went wrong when retrieving hostname.");
         }
-
-        builder = new OkHttpClient.Builder();
     
         try (DaprClient daprClient = (new DaprClientBuilder().build())) {
 
