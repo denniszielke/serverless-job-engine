@@ -1,5 +1,12 @@
 # Serverless job processing on Azure Container Apps
 
+This scenario project is about running a queue based job engine written in Java.
+The objective is ensure the following requirements:
+- Minimal amount of code beeing written by using Dapr
+- Fast scale up time of container runtime by using Quarkus native images
+- Automatic scale to 0 using Keda in Azure Container Apps
+- Ensuring that each instance is only processing one job at a time
+
 ![](/architecture.png)
 
 ## Local installation
