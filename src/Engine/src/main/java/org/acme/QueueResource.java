@@ -71,16 +71,16 @@ public class QueueResource {
     
         try (DaprClient daprClient = (new DaprClientBuilder().build())) {
 
-            String currentState = daprClient.getState("lock", localHostName, String.class).block().getValue();
+            String currentState = daprClient.getState("state", localHostName, String.class).block().getValue();
             
             if(currentState == null || currentState.isBlank() || currentState.equals("free"))
             {
                 logger.info("accepting new job");
-                daprClient.saveState("lock", localHostName, "busy").block(); 
+                daprClient.saveState("state", localHostName, "busy").block(); 
             }
             else{
                 logger.info("already busy");
-                daprClient.saveState("lock", localHostName, "busy").block(); 
+                daprClient.saveState("state", localHostName, "busy").block(); 
                 return Response.status(Status.BAD_REQUEST).build();
             }
 
@@ -96,7 +96,7 @@ public class QueueResource {
             daprClient.invokeBinding("output", "create", encodedBytes, metadata).block();
             
             logger.info("marking engine instance as free");
-            daprClient.saveState("lock", localHostName, "free").block(); 
+            daprClient.saveState("state", localHostName, "free").block(); 
         }catch (Exception e) {
             logger.error("Something went wrong during dapr interaction.");
             logger.error(e.toString());
