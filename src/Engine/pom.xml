@@ -59,6 +59,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-grpc</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
@@ -73,11 +77,11 @@
       <artifactId>okhttp</artifactId>
       <version>4.9.0</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-okhttp</artifactId>
-      <version>1.40.0</version>
-    </dependency>
+      <version>1.46.0</version>
+    </dependency> -->
   </dependencies>
   <build>
     <plugins>

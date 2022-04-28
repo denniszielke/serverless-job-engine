@@ -189,6 +189,10 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
               name: 'PORT'
               value: '8080'
             }
+            {
+              name: 'VALUE'
+              value: '8080'
+            }
           ]
         }
       ]

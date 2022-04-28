@@ -8,11 +8,19 @@ import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.dapr.client.DaprClientGrpc;
 import io.dapr.client.DaprClient;
+import io.dapr.client.DaprHttpBuilder;
 import io.dapr.client.DaprClientBuilder;
 import io.dapr.client.domain.State;
 import io.dapr.utils.TypeRef;
 import io.vertx.core.json.JsonObject;
+
+import io.grpc.ChannelCredentials;
+import io.grpc.Grpc;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.TlsChannelCredentials;
+import okhttp3.OkHttpClient;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -39,6 +47,8 @@ public class QueueResource {
     @Inject
     DaprClient dapr;
 
+    private OkHttpClient.Builder builder;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
@@ -60,8 +70,10 @@ public class QueueResource {
         }catch (Exception e) {
             logger.error("Something went wrong when retrieving hostname.");
         }
+
+        builder = new OkHttpClient.Builder();
     
-        try (DaprClient daprClient = (new DaprClientBuilder()).build()) {
+        try (DaprClient daprClient = (new DaprClientBuilder().build())) {
 
             String currentState = daprClient.getState("lock", localHostName, String.class).block().getValue();
             
