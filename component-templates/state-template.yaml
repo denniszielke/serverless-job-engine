@@ -1,0 +1,15 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: state
+spec:
+  name: state
+  type: state.azure.tablestorage
+  version: v1
+  metadata:
+  - name: accountName
+    value: {.storageAccount}
+  - name: accountKey
+    value: "{.storageAccessKey}"
+  - name: tableName
+    value: locks

@@ -1,4 +1,4 @@
-name: deploy-infrastructure
+name: deploy-apps
 on:
   workflow_dispatch:
     inputs:
@@ -13,10 +13,6 @@ on:
 permissions:
   id-token: write
   contents: read
-
-defaults:
-  run:
-    working-directory: scripts
 
 jobs:
   deploy_infra:

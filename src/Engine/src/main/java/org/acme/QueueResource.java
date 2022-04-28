@@ -100,6 +100,7 @@ public class QueueResource {
         }catch (Exception e) {
             logger.error("Something went wrong during dapr interaction.");
             logger.error(e.toString());
+            return Response.status(Status.BAD_REQUEST).build();
         }
 
         return Response.ok("ok").build();

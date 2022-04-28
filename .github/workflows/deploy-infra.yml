@@ -14,10 +14,6 @@ permissions:
   id-token: write
   contents: read
 
-defaults:
-  run:
-    working-directory: scripts
-
 jobs:
   deploy_infra:
     runs-on: ubuntu-latest

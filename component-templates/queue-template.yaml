@@ -1,0 +1,21 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: queue
+spec:
+  name: queue
+  type: bindings.azure.storagequeues
+  version: v1
+  metadata:
+  - name: storageAccount
+    value: {.storageAccount}
+  - name: storageAccessKey
+    value: "{.storageAccessKey}"
+  - name: queue
+    value: requests
+  - name: decodeBase64
+    value: "true"
+  - name: ttlInSeconds
+    value: "60"
+  - name: route
+    value: /receive

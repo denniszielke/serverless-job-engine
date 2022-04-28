@@ -4,7 +4,11 @@
 # Log file
 *.log
 
-components/**
+components/output.yaml
+components/queue.yaml
+components/state.yaml
+
+output/*.txt
 
 # BlueJ files
 *.ctxt

@@ -2,10 +2,54 @@
 
 ![](/architecture.png)
 
+## Local installation
 
-## Deployment of the Azure resources and GitHub configuration
+### Install dapr locally
+- Install dapr using this guide https://docs.dapr.io/getting-started/install-dapr-cli/
+- Init dapr using this guide https://docs.dapr.io/getting-started/install-dapr-selfhost/
 
-### Set up workload Identity for your GitHub Actions to use federated trust
+### Debug locally
+
+- Start the "Debug Quarkus application (src/Engine) with Dapr Local Components" Debug mode in VSCode
+- Trigger the Dapr input binding
+```
+curl -X POST -H 'Content-Type: application/json' http://localhost:8080/receive -d '{ message: "hello world" }'
+```
+
+## Deployment of the Azure resources
+
+### Manual deployment of azure resources with azure cli
+
+```
+DEPLOYMENT_NAME="dzaca23" # here the deployment
+LOCATION="northeurope" # azure region 
+bash ./deploy-infra-bicep.sh $DEPLOYMENT_NAME $LOCATION
+
+```
+
+### Manual deployment of app into existing Azure Container App Environment with azure cli
+
+```
+DEPLOYMENT_NAME="dzaca23" # here the deployment
+LOCATION="northeurope" # azure region 
+GHUSER="denniszielke" # replace with your user name
+IMAGE_TAG="latest"
+bash ./deploy-infra-apps.sh $DEPLOYMENT_NAME $IMAGE_TAG $GHUSER
+
+```
+
+### Debug locally with azure resource components
+
+```
+DEPLOYMENT_NAME="dzaca23" # here the deployment
+bash ./create-config.sh $DEPLOYMENT_NAME
+
+```
+
+- Start the "Debug Quarkus application (src/Engine) with Dapr Azure Components" Debug mode in VSCode
+
+
+## Set up workload Identity for your GitHub Actions to use federated trust
 
 Official documentation:
 https://docs.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-create-trust-github?tabs=azure-portal
@@ -13,12 +57,12 @@ https://docs.microsoft.com/en-us/azure/active-directory/develop/workload-identit
 We will create a service principal and grant it permissions on a dedicated resource group
 
 ```
-DEPLOYMENT_NAME="dzca15cgithub" # here the deployment
+DEPLOYMENT_NAME="dzaca23" # here the deployment
 RESOURCE_GROUP=$DEPLOYMENT_NAME # here enter the resources group
-LOCATION="northeurope" # azure region can only be canadacentral or northeurope
+LOCATION="northeurope" # azure region 
 AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv) # here enter your subscription id
 GHUSER="denniszielke" # replace with your user name
-GHREPO="blue-green-with-containerapps" # here the repo name
+GHREPO="serverless-job-engine" # here the repo name
 AZURE_TENANT_ID=$(az account show --query tenantId -o tsv)
 GHREPO_BRANCH=":ref:refs/heads/main"
 az group create -n $RESOURCE_GROUP -l $LOCATION -o none

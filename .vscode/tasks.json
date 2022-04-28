@@ -73,6 +73,19 @@
 			"appId": "engine",
 			"label": "daprd-down",
 			"type": "daprd-down"
+		},
+		{
+			"appId": "engine",
+			"appPort": 8080,
+			"label": "daprd-local-debug",
+			"type": "daprd",
+			"dependsOn": "quarkus:dev (src/Engine)",
+			"componentsPath": "./components-local"
+		},
+		{
+			"appId": "engine",
+			"label": "daprd-local-down",
+			"type": "daprd-down"
 		}
 	]
 }

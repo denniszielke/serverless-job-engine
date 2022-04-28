@@ -18,9 +18,18 @@
             "type": "java",
             "request": "attach",
             "hostName": "localhost",
-            "name": "Debug Quarkus application (src/Engine) with Dapr",
+            "name": "Debug Quarkus application (src/Engine) with Dapr Azure Components",
             "port": 5005,
             "postDebugTask": "daprd-down"
+        },
+        {
+            "preLaunchTask": "daprd-local-debug",
+            "type": "java",
+            "request": "attach",
+            "hostName": "localhost",
+            "name": "Debug Quarkus application (src/Engine) with Dapr Local Components",
+            "port": 5005,
+            "postDebugTask": "daprd-local-down"
         }
     ]
 }

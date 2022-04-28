@@ -155,8 +155,8 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
           image: containerRegistryPath
           name: 'engine'
           resources: {
-            cpu: '2'
-            memory: '4Gi'
+            cpu: '1'
+            memory: '2Gi'
           }
           probes: [
             {
@@ -165,7 +165,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
                 path: '/ping'
                 port: 8080
               }
-              initialDelaySeconds: 5
+              initialDelaySeconds: 3
               periodSeconds: 3
             }
             {
@@ -174,7 +174,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
                 path: '/ping'
                 port: 8080
               }
-              initialDelaySeconds: 5
+              initialDelaySeconds: 3
               periodSeconds: 3
             }
           ]
