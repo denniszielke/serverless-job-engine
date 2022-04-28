@@ -63,6 +63,8 @@ bash ./create-config.sh $DEPLOYMENT_NAME
 Official documentation:
 https://docs.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-create-trust-github?tabs=azure-portal
 
+For this repository to your own account.
+
 We will create a service principal and grant it permissions on a dedicated resource group
 
 ```
