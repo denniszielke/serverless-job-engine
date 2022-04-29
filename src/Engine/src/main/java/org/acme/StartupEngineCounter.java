@@ -50,8 +50,14 @@ public class StartupEngineCounter {
                 }
 
                 try {
-                    StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
-                    daprClient.saveState("state", "count", runningEngineState.getEtag(), runningEnginesCount, operation).block();
+                    if (runningEngineState.getEtag() != null) {
+                        StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
+                        daprClient.saveState("state", "count", runningEngineState.getEtag(), runningEnginesCount, operation).block();
+                    }else
+                    {
+                        daprClient.saveState("state", "count", runningEnginesCount).block();
+                    }
+
                     attempts = 0;
                 } catch (DaprException ex) {
                     if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {

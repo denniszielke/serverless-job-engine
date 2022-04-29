@@ -191,7 +191,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
             }
             {
               name: 'VALUE'
-              value: '1324'
+              value: '456'
             }
           ]
         }
