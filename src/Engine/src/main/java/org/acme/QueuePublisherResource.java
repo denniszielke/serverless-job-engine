@@ -39,8 +39,8 @@ import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import io.vertx.core.json.JsonObject;
 
-@Path("/receive")
-public class QueueResource {
+@Path("/publish")
+public class QueuePublisherResource {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -50,15 +50,11 @@ public class QueueResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response receive(String body) {
+    public Response publish(String body) {
 
         String localHostName = null;
 
         logger.info("Found body: " + body);
-
-        Calendar calendar = Calendar.getInstance();
-        long seconds = calendar.getTimeInMillis();
-        String blobName = Long.toString(seconds);
 
         try {
             InetAddress address = InetAddress.getLocalHost();
@@ -70,33 +66,16 @@ public class QueueResource {
         }
     
         try {
-
-            String currentState = daprClient.getState("state", localHostName, String.class).block().getValue();
             
-            if(currentState == null || currentState.isBlank() || currentState.equals("free"))
-            {
-                logger.info("accepting new job");
-                daprClient.saveState("state", localHostName, "busy").block(); 
-            }
-            else{
-                logger.info("already busy");
-                daprClient.saveState("state", localHostName, "busy").block(); 
-                return Response.status(Status.BAD_REQUEST).build();
-            }
-
-            TimeUnit.MILLISECONDS.sleep(10000);
-            
-            String message = "my message from " + body + " has been processed on host " + localHostName;
+            String message = "my message has been created " + body + " has been processed on host " + localHostName;
             byte[] bytes = message.getBytes();
             byte[] encodedBytes = Base64.getUrlEncoder().encode(bytes);
 
             Map<String,String> metadata = new HashMap<>();
-            metadata.put("blobName", blobName + ".txt");
 
-            daprClient.invokeBinding("output", "create", encodedBytes, metadata).block();
+            daprClient.invokeBinding("queue", "create", encodedBytes, metadata).block();
             
-            logger.info("marking engine instance as free");
-            daprClient.saveState("state", localHostName, "free").block(); 
+            logger.info("marking engine instance as free"); 
         }catch (Exception e) {
             logger.error("Something went wrong during dapr interaction while processing queues.");
             logger.error(e.toString());

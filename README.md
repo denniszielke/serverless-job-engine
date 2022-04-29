@@ -22,7 +22,11 @@ The objective is ensure the following requirements:
 - Start the "Debug Quarkus application (src/Engine) with Dapr Local Components" Debug mode in VSCode
 - Trigger the Dapr input binding
 ```
-curl -X POST -H 'Content-Type: application/json' http://localhost:8080/receive -d '{ message: "hello world" }'
+curl -X POST -H 'Content-Type: application/json' http://localhost:8080/consume -d '{ message: "hello world" }'
+```
+- Create message in queue
+```
+curl -X POST -H 'Content-Type: application/json' http://localhost:8080/publish -d '{ message: "hello world" }'
 ```
 
 ## Deployment of the Azure resources

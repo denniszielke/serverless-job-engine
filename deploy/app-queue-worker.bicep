@@ -113,7 +113,7 @@ resource queueinput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01
       }
       {
         name: 'route'
-        value: '/receive'
+        value: '/consume'
       }
     ]
     scopes: [

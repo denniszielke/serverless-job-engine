@@ -11,4 +11,4 @@ spec:
   - name: redisPassword
     value: ""
   - name: route
-    value: /receive
+    value: /consume
