@@ -45,7 +45,7 @@ public class QueueResource {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    DaprClient dapr;
+    DaprClient daprClient;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -69,7 +69,7 @@ public class QueueResource {
             logger.error("Something went wrong when retrieving hostname.");
         }
     
-        try (DaprClient daprClient = (new DaprClientBuilder().build())) {
+        try {
 
             String currentState = daprClient.getState("state", localHostName, String.class).block().getValue();
             
@@ -98,7 +98,7 @@ public class QueueResource {
             logger.info("marking engine instance as free");
             daprClient.saveState("state", localHostName, "free").block(); 
         }catch (Exception e) {
-            logger.error("Something went wrong during dapr interaction.");
+            logger.error("Something went wrong during dapr interaction while processing queues.");
             logger.error(e.toString());
             return Response.status(Status.BAD_REQUEST).build();
         }
