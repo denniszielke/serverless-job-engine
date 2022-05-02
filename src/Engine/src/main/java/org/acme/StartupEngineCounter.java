@@ -1,6 +1,11 @@
 package org.acme;
 
 import javax.inject.Singleton;
+
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.event.Observes;
 
 import org.slf4j.Logger;
@@ -13,6 +18,7 @@ import io.dapr.client.domain.TransactionalStateOperation;
 import io.dapr.client.domain.StateOptions.Concurrency;
 import io.dapr.client.domain.StateOptions.Consistency;
 import io.dapr.exceptions.DaprException;
+import io.dapr.v1.CommonProtos.Etag;
 import io.grpc.Status;
 
 @Singleton
@@ -26,8 +32,18 @@ public class StartupEngineCounter {
     private Boolean counted = false;
 
     void check() {
-        if (counted){
+        if (Boolean.TRUE.equals(counted)){
             return;
+        }
+
+        String localHostName = null;
+
+        try {
+            InetAddress address = InetAddress.getLocalHost();
+            localHostName = address.getHostName();
+
+        }catch (Exception e) {
+            localHostName = "unknown";
         }
 
         logger.info("The application is starting...");
@@ -37,25 +53,35 @@ public class StartupEngineCounter {
         do {
 
             try {
+                State<Counter> runningEngineCounterState = daprClient.getState("state", "counter", Counter.class).block();
+                String eTag = null;
+                Counter counter = null;
 
-                State<Integer> runningEngineState = daprClient.getState("state", "count", Integer.class).block();
-
-                int runningEnginesCount = 0;
-
-                if (runningEngineState == null || runningEngineState.getValue() == null || runningEngineState.getError() != null || runningEngineState.getValue() < 1) {
-                    runningEnginesCount = 1;
-                } else {
-                    runningEnginesCount = runningEngineState.getValue();
-                    runningEnginesCount += 1;
+                if (runningEngineCounterState == null || runningEngineCounterState.getValue() == null || runningEngineCounterState.getError() != null){
+                    counter = new Counter();
+                    counter.Count = 1;
+                    counter.Hosts.add(localHostName);
+                }else
+                {
+                    counter =  runningEngineCounterState.getValue();
+                    eTag = runningEngineCounterState.getEtag();
+                    List<String> hosts = new ArrayList<String>();
+                    for (String hostString : counter.Hosts) {
+                        if (!localHostName.equals(hostString)){
+                            hosts.add(hostString);
+                        }
+                    }
+                    hosts.add(localHostName);
+                    counter.Count = counter.Hosts.size();
                 }
 
                 try {
-                    if (runningEngineState.getEtag() != null) {
+                    if (eTag != null) {
                         StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
-                        daprClient.saveState("state", "count", runningEngineState.getEtag(), runningEnginesCount, operation).block();
+                        daprClient.saveState("state", "counter", eTag, counter, operation).block();
                     }else
                     {
-                        daprClient.saveState("state", "count", runningEnginesCount).block();
+                        daprClient.saveState("state", "counter", counter).block();
                     }
 
                     attempts = 0;

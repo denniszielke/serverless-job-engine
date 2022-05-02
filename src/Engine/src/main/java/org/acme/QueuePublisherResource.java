@@ -49,12 +49,16 @@ public class QueuePublisherResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response publish(String body) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response publish(JobRequest request) {
 
         String localHostName = null;
 
-        logger.info("Found body: " + body);
+        if (request == null){
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+
+        logger.info("Found body: " + request.message);
 
         try {
             InetAddress address = InetAddress.getLocalHost();
@@ -67,7 +71,7 @@ public class QueuePublisherResource {
     
         try {
             
-            String message = "my message has been created " + body + " has been processed on host " + localHostName;
+            String message = "my message has been received by " + localHostName + " with message " + request.message ;
             byte[] bytes = message.getBytes();
             byte[] encodedBytes = Base64.getUrlEncoder().encode(bytes);
 

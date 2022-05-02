@@ -25,18 +25,19 @@ public class EngineResource {
     DaprClient daprClient;
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getRunningEngines() {
-        int runningEnginesCount = 0;
+        Counter counter = null;
 
         try {
 
-            State<Integer> runningEngineState = daprClient.getState("state", "count", Integer.class).block();
-
-            if (runningEngineState == null || runningEngineState.getValue() == null || runningEngineState.getError() != null || runningEngineState.getValue() < 1) {
-                runningEnginesCount = 1;
+            State<Counter> runningEngineState = daprClient.getState("state", "counter", Counter.class).block();
+ 
+            if (runningEngineState == null || runningEngineState.getValue() == null || runningEngineState.getError() != null) {
+                counter = new Counter();
+                counter.Count = 1;
             } else {
-                runningEnginesCount = runningEngineState.getValue();
+                counter = runningEngineState.getValue();
             }         
              
         }catch (Exception e) {
@@ -45,6 +46,6 @@ public class EngineResource {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        return Response.ok(runningEnginesCount).build();
+        return Response.ok(counter).build();
     }
 }
