@@ -84,7 +84,7 @@ public class QueueConsumerResource {
                 return Response.status(Status.BAD_REQUEST).build();
             }
 
-            TimeUnit.MILLISECONDS.sleep(10000);
+            TimeUnit.MILLISECONDS.sleep(20000);
             
             String message = "my message from " + body + " has been processed on host " + localHostName;
             byte[] bytes = message.getBytes();
