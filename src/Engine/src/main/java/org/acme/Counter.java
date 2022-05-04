@@ -9,8 +9,9 @@ public class Counter {
     public String[] Hosts;
 
     public Counter() {
+        super();
         this.Count = 0;
-        this.Hosts = new String[0];
+        this.Hosts = new String[0];        
     }
 
     public Counter(int count, String[] hosts) {
