@@ -31,15 +31,29 @@ public class EngineResource {
         Counter counter = null;
 
         try {
-
-            State<Counter> runningEngineState = daprClient.getState("state", "counter", Counter.class).block();
- 
-            if (runningEngineState == null || runningEngineState.getValue() == null || runningEngineState.getError() != null) {
-                counter = new Counter();
+            counter = new Counter();
+            State<String> runningEngineCounterState = daprClient.getState("state", "hosts", String.class).block(); 
+            if (runningEngineCounterState == null || runningEngineCounterState.getValue() == null || runningEngineCounterState.getError() != null){
                 counter.Count = 1;
-            } else {
-                counter = runningEngineState.getValue();
-            }         
+            }else
+            {
+                String existingHosts = runningEngineCounterState.getValue();
+               
+                if (existingHosts.length() > 0 ){
+                    if (existingHosts.contains( ",")){
+                        counter.Hosts = existingHosts.split(",");
+                        
+                    }else{
+                        if(existingHosts.length() > 1){
+                            counter.Hosts = new String[]{existingHosts};
+                        }
+                    }
+                }else{
+                    counter.Count = 1;
+                }
+               
+            }
+
              
         }catch (Exception e) {
             logger.error("Something went wrong during dapr interaction while processing counter state.");
