@@ -30,4 +30,4 @@ jobs:
     - name: 'Run az commands'
       run: |
         chmod +x ./deploy-apps.sh
-        ./deploy-apps.sh ${{ github.event.inputs.deploymentName }} ${{ github.event.inputs.version }} ${{ github.repository_owner }}
+        ./deploy-apps.sh ${{ github.event.inputs.deploymentName }} ${{ github.repository_owner }} ${{ github.event.inputs.version }}

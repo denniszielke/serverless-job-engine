@@ -47,7 +47,7 @@ DEPLOYMENT_NAME="dzaca23" # here the deployment
 LOCATION="northeurope" # azure region 
 GHUSER="denniszielke" # replace with your user name
 IMAGE_TAG="latest"
-bash ./deploy-infra-apps.sh $DEPLOYMENT_NAME $IMAGE_TAG $GHUSER
+bash ./deploy-infra-apps.sh $DEPLOYMENT_NAME $GHUSER $IMAGE_TAG
 
 ```
 

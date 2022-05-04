@@ -4,8 +4,8 @@ set -e
 
 # infrastructure deployment properties
 DEPLOYMENT_NAME="$1" # here enter unique deployment name (ideally short and with letters for global uniqueness)
-VERSION="$2" # version tag showing up in app
-REGISTRY="$3"
+REGISTRY="$2"
+VERSION="$3" # version tag showing up in app
 
 if [ "$DEPLOYMENT_NAME" == "" ]; then
 echo "No project name provided - aborting"
