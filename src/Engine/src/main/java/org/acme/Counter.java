@@ -12,7 +12,6 @@ public class Counter {
     @JsonProperty("hosts")
     public String[] Hosts;
 
-    @JsonCreator
     public Counter() {
         super();
         this.Count = 0;

@@ -46,7 +46,7 @@ public class StartupEngineCounter {
             localHostName = "unknown";
         }
 
-        logger.info("The application is starting...");
+        logger.info("The application is registering...");
 
         int attempts = 3; // we try three times
 
@@ -87,6 +87,7 @@ public class StartupEngineCounter {
                     }
 
                     attempts = 0;
+                    counted = true;
                 } catch (DaprException ex) {
                     logger.error(ex.toString());
                     if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {
@@ -108,7 +109,6 @@ public class StartupEngineCounter {
 
         } while (attempts > 0);
 
-        counted = true;
     }
 
 }
