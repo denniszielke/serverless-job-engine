@@ -76,6 +76,8 @@ public class StartupEngineCounter {
                 }
 
                 try {
+                    daprClient.saveState("state", "hosts", counter.Hosts).block();
+
                     if (eTag != null) {
                         StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
                         daprClient.saveState("state", "counter", eTag, counter, operation).block();
@@ -86,6 +88,7 @@ public class StartupEngineCounter {
 
                     attempts = 0;
                 } catch (DaprException ex) {
+                    logger.error(ex.toString());
                     if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {
                         // Expected error due to etag mismatch.
                         System.out.println(String.format("Expected failure. %s", ex.getErrorCode()));

@@ -53,6 +53,7 @@ public class AppLifecycleBean {
                     daprClient.saveState("state", "counter", runningEngineState.getEtag(), runningEnginesCount, operation).block();
                     attempts = 0;
                 } catch (DaprException ex) {
+                    logger.error(ex.toString());
                     if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {
                         // Expected error due to etag mismatch.
                         TimeUnit.MILLISECONDS.sleep(1000);
