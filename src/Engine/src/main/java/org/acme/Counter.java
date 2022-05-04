@@ -1,5 +1,8 @@
 package org.acme;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = false)
 public class Counter {
     public int Count;
     
