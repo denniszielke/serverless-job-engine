@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = false)
-public class Counter {
+public static class Counter {
     @JsonProperty("count")
     public int Count;
     
@@ -20,5 +20,10 @@ public class Counter {
     public Counter(int count, String[] hosts) {
         this.Count = count;
         this.Hosts = hosts;
+    }
+
+    @Override
+    public String toString() {
+      return "Counter " + this.Count;
     }
 }

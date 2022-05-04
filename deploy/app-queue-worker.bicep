@@ -78,7 +78,7 @@ resource output 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-pre
 }
 
 resource queueinput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-preview' = {
-  name: '${environmentName}/queueinput'
+  name: '${environmentName}/queue'
   properties: {
     componentType : 'bindings.azure.storagequeues'
     version: 'v1'
