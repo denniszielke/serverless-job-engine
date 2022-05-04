@@ -60,7 +60,7 @@ public class StartupEngineCounter {
                 if (runningEngineCounterState == null || runningEngineCounterState.getValue() == null || runningEngineCounterState.getError() != null){
                     counter = new Counter();
                     counter.Count = 1;
-                    counter.Hosts.add(localHostName);
+                    counter.Hosts = new String[] { localHostName };
                 }else
                 {
                     counter =  runningEngineCounterState.getValue();
@@ -72,7 +72,7 @@ public class StartupEngineCounter {
                         }
                     }
                     hosts.add(localHostName);
-                    counter.Count = counter.Hosts.size();
+                    counter.Count = counter.Hosts.length;
                 }
 
                 try {
