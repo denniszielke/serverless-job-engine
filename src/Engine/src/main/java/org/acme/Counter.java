@@ -1,11 +1,14 @@
 package org.acme;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = false)
 public class Counter {
+    @JsonProperty("count")
     public int Count;
     
+    @JsonProperty("hosts")
     public String[] Hosts;
 
     public Counter() {
