@@ -50,37 +50,45 @@ public class AppLifecycleBean {
 
             try {
 
-                State<Counter> runningEngineCounterState = daprClient.getState("state", "counter", Counter.class).block();
+                State<String> runningEngineCounterState = daprClient.getState("state", "hosts", String.class).block();
                 String eTag = null;
-                Counter counter = null;
+                String newHostList = null;
 
                 if (runningEngineCounterState == null || runningEngineCounterState.getValue() == null || runningEngineCounterState.getError() != null){
-                    counter = new Counter();
-                    counter.Count = 1;
-                    counter.Hosts = new String[] { localHostName };
+                    newHostList = localHostName;
                 }else
                 {
-                    counter =  runningEngineCounterState.getValue();
+                    String existingHosts = runningEngineCounterState.getValue();
                     eTag = runningEngineCounterState.getEtag();
-                    List<String> hosts = new ArrayList<String>();
-                    if (counter.Hosts != null ){
-                        for (String hostString : counter.Hosts) {
-                            if (!localHostName.equals(hostString)){
-                                hosts.add(hostString);
+                    if (existingHosts.length() > 0 ){
+                        if (existingHosts.contains( ",")){
+                            newHostList = "";
+                            String[] existingHostsArray = existingHosts.split(",");
+                            for (String hostString : existingHostsArray) {                                
+                                if (hostString.length() > 0 && !localHostName.equals(hostString)){
+                                    if (newHostList.length() > 0)
+                                    {
+                                        newHostList = newHostList + ",";
+                                    }
+                                    newHostList = newHostList + existingHosts;
+                                }
+                            } 
+                        }else{
+                            if(existingHosts.length() > 1 && !localHostName.equals(existingHosts)){
+                                newHostList = existingHosts;
                             }
                         }
                     }
-                    counter.Hosts = hosts.toArray(String[] ::new);
-                    counter.Count = counter.Hosts.length;
+                   
                 }
 
                 try {
                     if (eTag != null) {
                         StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
-                        daprClient.saveState("state", "counter", eTag, counter, operation).block();
+                        daprClient.saveState("state", "hosts", eTag, newHostList, operation).block();
                     }else
                     {
-                        daprClient.saveState("state", "counter", counter).block();
+                        daprClient.saveState("state", "hosts", newHostList).block();
                     }
 
                     attempts = 0;

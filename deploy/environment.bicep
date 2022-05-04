@@ -60,7 +60,7 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
   location: location
   properties: {
     type: 'managed'
-    internalLoadBalancerEnabled: false
+    internalLoadBalancerEnabled: internalOnly
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {
