@@ -153,6 +153,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
       containers: [
         {
           image: containerRegistryPath
+          terminationGracePeriodSeconds: 5
           name: 'engine'
           resources: {
             cpu: '1'
@@ -165,7 +166,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
                 path: '/ping'
                 port: 8080
               }
-              initialDelaySeconds: 3
+              initialDelaySeconds: 5
               periodSeconds: 3
             }
             {
@@ -174,16 +175,10 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
                 path: '/ping'
                 port: 8080
               }
-              initialDelaySeconds: 3
+              initialDelaySeconds: 5
               periodSeconds: 3
             }
           ]
-          // volumeMounts: [
-          //   {
-          //     mountPath: '/mnt/files'
-          //     volumeName: 'files'
-          //   }
-          // ]
           env:[
             {
               name: 'PORT'

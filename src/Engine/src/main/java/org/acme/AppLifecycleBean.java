@@ -53,7 +53,7 @@ public class AppLifecycleBean {
                     daprClient.saveState("state", "counter", runningEngineState.getEtag(), runningEnginesCount, operation).block();
                     attempts = 0;
                 } catch (DaprException ex) {
-                    logger.error(ex.toString());
+                    logger.error(ex.getMessage(), ex);
                     if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {
                         // Expected error due to etag mismatch.
                         TimeUnit.MILLISECONDS.sleep(1000);
@@ -66,7 +66,7 @@ public class AppLifecycleBean {
 
             } catch (Exception e) {
                 logger.error("Something went wrong during dapr state counter update.");
-                logger.error(e.toString());
+                logger.error(e.getMessage(), e);
                 
             } finally {
                 attempts--;

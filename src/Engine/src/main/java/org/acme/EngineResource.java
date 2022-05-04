@@ -43,7 +43,7 @@ public class EngineResource {
              
         }catch (Exception e) {
             logger.error("Something went wrong during dapr interaction while processing counter state.");
-            logger.error(e.toString());
+            logger.error(e.getMessage(), e);
             return Response.status(Status.BAD_REQUEST).build();
         }
 
