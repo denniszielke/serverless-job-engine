@@ -7,6 +7,10 @@ import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import io.dapr.client.DaprClient;
@@ -30,6 +34,15 @@ public class AppLifecycleBean {
     void onStop(@Observes ShutdownEvent ev) {               
         logger.info("The application is stopping...");
 
+        String localHostName = null;
+
+        try {
+            InetAddress address = InetAddress.getLocalHost();
+            localHostName = address.getHostName();
+
+        }catch (Exception e) {
+            localHostName = "unknown";
+        }
         
         int attempts = 3; // we try three times
 
@@ -37,26 +50,44 @@ public class AppLifecycleBean {
 
             try {
 
-                State<Integer> runningEngineState = daprClient.getState("state", "counter", Integer.class).block();
+                State<Counter> runningEngineCounterState = daprClient.getState("state", "counter", Counter.class).block();
+                String eTag = null;
+                Counter counter = null;
 
-                int runningEnginesCount = 0;
-
-                if (runningEngineState == null || runningEngineState.getValue() == null || runningEngineState.getError() != null || runningEngineState.getValue() < 1) {
-                    runningEnginesCount = 0;
-                } else {
-                    runningEnginesCount = runningEngineState.getValue();
-                    runningEnginesCount -= 1;
+                if (runningEngineCounterState == null || runningEngineCounterState.getValue() == null || runningEngineCounterState.getError() != null){
+                    counter = new Counter();
+                    counter.Count = 1;
+                    counter.Hosts = new String[] { localHostName };
+                }else
+                {
+                    counter =  runningEngineCounterState.getValue();
+                    eTag = runningEngineCounterState.getEtag();
+                    List<String> hosts = new ArrayList<String>();
+                    if (counter.Hosts != null ){
+                        for (String hostString : counter.Hosts) {
+                            if (!localHostName.equals(hostString)){
+                                hosts.add(hostString);
+                            }
+                        }
+                    }
+                    counter.Hosts = hosts.toArray(String[] ::new);
+                    counter.Count = counter.Hosts.length;
                 }
 
                 try {
-                    StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
-                    daprClient.saveState("state", "counter", runningEngineState.getEtag(), runningEnginesCount, operation).block();
+                    if (eTag != null) {
+                        StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
+                        daprClient.saveState("state", "counter", eTag, counter, operation).block();
+                    }else
+                    {
+                        daprClient.saveState("state", "counter", counter).block();
+                    }
+
                     attempts = 0;
                 } catch (DaprException ex) {
                     logger.error(ex.getMessage(), ex);
                     if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {
                         // Expected error due to etag mismatch.
-                        TimeUnit.MILLISECONDS.sleep(1000);
                         System.out.println(String.format("Expected failure. %s", ex.getErrorCode()));
                     } else {
                         System.out.println("Unexpected exception.");

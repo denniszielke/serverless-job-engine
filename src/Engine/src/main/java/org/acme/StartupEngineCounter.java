@@ -66,12 +66,15 @@ public class StartupEngineCounter {
                     counter =  runningEngineCounterState.getValue();
                     eTag = runningEngineCounterState.getEtag();
                     List<String> hosts = new ArrayList<String>();
-                    for (String hostString : counter.Hosts) {
-                        if (!localHostName.equals(hostString)){
-                            hosts.add(hostString);
+                    if (counter.Hosts != null ){
+                        for (String hostString : counter.Hosts) {
+                            if (!localHostName.equals(hostString)){
+                                hosts.add(hostString);
+                            }
                         }
                     }
                     hosts.add(localHostName);
+                    counter.Hosts = hosts.toArray(String[] ::new);
                     counter.Count = counter.Hosts.length;
                 }
 
