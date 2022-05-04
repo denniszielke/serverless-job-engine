@@ -1,4 +1,4 @@
-param location string = resourceGroup().location
+param location string = 'centralus'  //resourceGroup().location
 param logAnalyticsWorkspaceName string 
 param appInsightsName string
 

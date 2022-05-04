@@ -16,6 +16,7 @@ import io.dapr.client.domain.TransactionalStateOperation;
 import io.dapr.client.domain.StateOptions.Concurrency;
 import io.dapr.client.domain.StateOptions.Consistency;
 import io.dapr.exceptions.DaprException;
+import java.util.concurrent.TimeUnit;
 import io.grpc.Status;
 
 @ApplicationScoped
@@ -36,7 +37,7 @@ public class AppLifecycleBean {
 
             try {
 
-                State<Integer> runningEngineState = daprClient.getState("state", "count", Integer.class).block();
+                State<Integer> runningEngineState = daprClient.getState("state", "counter", Integer.class).block();
 
                 int runningEnginesCount = 0;
 
@@ -49,11 +50,12 @@ public class AppLifecycleBean {
 
                 try {
                     StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
-                    daprClient.saveState("state", "count", runningEngineState.getEtag(), runningEnginesCount, operation).block();
+                    daprClient.saveState("state", "counter", runningEngineState.getEtag(), runningEnginesCount, operation).block();
                     attempts = 0;
                 } catch (DaprException ex) {
                     if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {
                         // Expected error due to etag mismatch.
+                        TimeUnit.MILLISECONDS.sleep(1000);
                         System.out.println(String.format("Expected failure. %s", ex.getErrorCode()));
                     } else {
                         System.out.println("Unexpected exception.");
@@ -67,6 +69,7 @@ public class AppLifecycleBean {
                 
             } finally {
                 attempts--;
+                
             }
 
         } while (attempts > 0);

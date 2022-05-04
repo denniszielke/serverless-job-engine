@@ -68,11 +68,14 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
         sharedKey: logAnalyticsSharedKey
       }
     }
-    containerAppsConfiguration: {
-      daprAIInstrumentationKey: appInsightsInstrumentationKey
-      controlPlaneSubnetResourceId : '${vnet.id}/subnets/aca-control'
-      appSubnetResourceId: '${vnet.id}/subnets/aca-apps'
-      internalOnly: internalOnly
+    daprAIInstrumentationKey: appInsightsInstrumentationKey
+    vnetConfiguration: {
+      dockerBridgeCidr: '172.17.0.1/16'
+      platformReservedCidr: '10.2.0.0/20'
+      platformReservedDnsIP: '10.2.0.10'
+      infrastructureSubnetId: '${vnet.id}/subnets/aca-control'
+      runtimeSubnetId: '${vnet.id}/subnets/aca-apps'
+      internal: internalOnly
     }
   }
 }
