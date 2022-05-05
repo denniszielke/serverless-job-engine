@@ -84,6 +84,7 @@ public class AppLifecycleBean {
 
                 try {
                     if (eTag != null) {
+                        logger.info("etag is " + eTag);
                         StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
                         daprClient.saveState("state", "hosts", eTag, newHostList, operation).block();
                     }else

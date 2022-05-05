@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.enterprise.event.Observes;
 
+import org.jboss.resteasy.cdi.i18n.LogMessages_.logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
@@ -85,6 +86,7 @@ public class StartupEngineCounter {
 
                 try {
                     if (eTag != null) {
+                        logger.info("etag is " + eTag);
                         StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
                         daprClient.saveState("state", "hosts", eTag, newHostList, operation).block();
                     }else
