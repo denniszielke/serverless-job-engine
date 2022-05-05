@@ -47,6 +47,9 @@ public class StartupEngineCounter {
             localHostName = "unknown";
         }
 
+        localHostName = "engine--mkc23m5-5b54cc89cd-xcnwr";
+        // c89cd-xcnwr,engine--mkc23m5-5b54cc89cd-42wfn,engine--mkc23m5-5b54cc89cd-xcnwr,engine--mkc23m5-5b54cc89cd-xcnwr,engine--mkc23m5-5b54cc89cd-42wfn,engine--mkc23m5-5b54cc89cd-xcnwr,engine--mkc23m5-5b54cc89cd-xcnwr,engine--mkc23m5-5b54cc89cd-42wfn,engine--9u
+
         logger.info("The application is registering...");
 
         int attempts = 3; // we try three times
@@ -70,12 +73,15 @@ public class StartupEngineCounter {
                             String[] existingHostsArray = existingHosts.split(",");
                             for (String hostString : existingHostsArray) {
                                 if (hostString.length() > 0 && !localHostName.equals(hostString)){
-                                    newHostList = newHostList + "," + existingHosts;
+                                    newHostList = newHostList + "," + hostString;
                                 }
                             } 
                         }else{
-                            if(existingHosts.length() > 1){
+                            if(existingHosts.length() > 1 && !localHostName.equals(existingHosts)){
                                 newHostList = localHostName + "," + existingHosts;
+                            }
+                            else{
+                                newHostList = localHostName;
                             }
                         }
                     }else{
