@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.UUID;
 
 import io.dapr.client.DaprClientGrpc;
 import io.dapr.client.DaprClient;
@@ -54,7 +55,7 @@ public class QueuePublisherResource {
 
         String localHostName = null;
 
-        if (request == null){
+        if (request == null || request.guid == null){
             return Response.status(Status.BAD_REQUEST).build();
         }
 
@@ -71,7 +72,7 @@ public class QueuePublisherResource {
     
         try {
             
-            String message = "my message has been received by " + localHostName + " with message " + request.message ;
+            String message = "request " + request.guid + " has been received by " + localHostName + " with message " + request.message ;
             byte[] bytes = message.getBytes();
             byte[] encodedBytes = Base64.getUrlEncoder().encode(bytes);
 
@@ -80,12 +81,13 @@ public class QueuePublisherResource {
             daprClient.invokeBinding("queue", "create", encodedBytes, metadata).block();
             
             logger.info("marking engine instance as free"); 
+            request.message = "OK";
         }catch (Exception e) {
             logger.error("Something went wrong during dapr interaction while processing queues.");
             logger.error(e.getMessage(), e);
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        return Response.ok("ok").build();
+        return Response.ok(request).build();
     }
 }
