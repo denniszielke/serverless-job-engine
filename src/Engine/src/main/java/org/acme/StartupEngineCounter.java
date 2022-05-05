@@ -47,9 +47,6 @@ public class StartupEngineCounter {
             localHostName = "unknown";
         }
 
-        localHostName = "engine--mkc23m5-5b54cc89cd-xcnwr";
-        // c89cd-xcnwr,engine--mkc23m5-5b54cc89cd-42wfn,engine--mkc23m5-5b54cc89cd-xcnwr,engine--mkc23m5-5b54cc89cd-xcnwr,engine--mkc23m5-5b54cc89cd-42wfn,engine--mkc23m5-5b54cc89cd-xcnwr,engine--mkc23m5-5b54cc89cd-xcnwr,engine--mkc23m5-5b54cc89cd-42wfn,engine--9u
-
         logger.info("The application is registering...");
 
         int attempts = 3; // we try three times
