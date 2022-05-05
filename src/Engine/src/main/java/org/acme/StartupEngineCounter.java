@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.event.Observes;
 
@@ -100,6 +101,7 @@ public class StartupEngineCounter {
                     logger.error(ex.getMessage(), ex);
                     if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {
                         // Expected error due to etag mismatch.
+                        TimeUnit.MILLISECONDS.sleep(1000);
                         System.out.println(String.format("Expected failure. %s", ex.getErrorCode()));
                     } else {
                         System.out.println("Unexpected exception.");
