@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.event.Observes;
 
-import org.jboss.resteasy.cdi.i18n.LogMessages_.logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
