@@ -28,28 +28,27 @@ public class EngineResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRunningEngines() {
-        Counter counter = null;
+        String[] hosts = null;
 
-        try {
-            counter = new Counter();
+        try {            
             State<String> runningEngineCounterState = daprClient.getState("state", "hosts", String.class).block(); 
             if (runningEngineCounterState == null || runningEngineCounterState.getValue() == null || runningEngineCounterState.getError() != null){
-                counter.Count = 1;
+                hosts = new String[] { "1"};
             }else
             {
                 String existingHosts = runningEngineCounterState.getValue();
                
                 if (existingHosts.length() > 0 ){
                     if (existingHosts.contains( ",")){
-                        counter.Hosts = existingHosts.split(",");
+                        hosts = existingHosts.split(",");
                         
                     }else{
                         if(existingHosts.length() > 1){
-                            counter.Hosts = new String[]{existingHosts};
+                            hosts = new String[]{existingHosts};
                         }
                     }
                 }else{
-                    counter.Count = 1;
+                    hosts = new String[] { "0" };
                 }
                
             }
@@ -61,6 +60,6 @@ public class EngineResource {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        return Response.ok(counter).build();
+        return Response.ok(hosts).build();
     }
 }

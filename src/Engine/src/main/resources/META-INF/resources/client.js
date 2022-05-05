@@ -5,10 +5,10 @@
           dataType: 'json',
           type: 'get',
           success: function(data) { // check if available
-            $("#counter").text("Running: " + data.Count);
+            $("#counter").text("Running: " + data.length);
             $("#hosts").empty();
-            if (data.Hosts){
-                data.Hosts.forEach(function(value){
+            if (data){
+                data.forEach(function(value){
                     $("#hosts").append('<li>' + value +'</li>');
                 });
             }            
