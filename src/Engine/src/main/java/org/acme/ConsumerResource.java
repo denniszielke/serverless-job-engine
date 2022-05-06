@@ -40,6 +40,7 @@ public class ConsumerResource {
         String localHostName = null;
 
         try {
+            TimeUnit.MILLISECONDS.sleep(1000);
             InetAddress address = InetAddress.getLocalHost();
             localHostName = address.getHostName();
             logger.info("Triggered by subscription event on " + localHostName);
@@ -50,8 +51,6 @@ public class ConsumerResource {
 
         CloudEvent event = null;
         JobRequest request = null;
-
-        TimeUnit.MILLISECONDS.sleep(1000);
 
         try{
             event = CloudEvent.deserialize(body);
