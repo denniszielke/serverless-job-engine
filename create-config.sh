@@ -37,11 +37,11 @@ STORAGE_KEY_ESC=$(echo $STORAGE_KEY | sed 's/\//\\\//g')
 
 EVENTHUB_CONNECTIONSTRING=$(az eventhubs eventhub authorization-rule keys list --namespace-name evhbns$DEPLOYMENT_NAME --eventhub-name requests --resource-group $RESOURCE_GROUP --name 'ListenSend' --query "primaryConnectionString" | tr -d '"')
 echo $EVENTHUB_CONNECTIONSTRING
-EVENTHUB_CONNECTIONSTRING_ESC=$(echo $EVENTHUB_CONNECTIONSTRING | sed 's/\//\\\//g')
+EVENTHUB_CONNECTIONSTRING_ESC=$(echo "$EVENTHUB_CONNECTIONSTRING;EntityPath=requests" | sed 's/\//\\\//g')
 
 replaces="s/{.storageAccount}/$STORAGE_NAME/;";
-replaces="$replaces s/{.storageAccessKey}/$STORAGE_KEY_ESC/; ";
-replaces="$replaces s/{.eventHubConnectionString}/$EVENTHUB_CONNECTIONSTRING_ESC/; ";
+replaces="$replaces s/{.storageAccessKey}/$STORAGE_KEY_ESC/;";
+replaces="$replaces s/{.eventHubConnectionString}/$EVENTHUB_CONNECTIONSTRING_ESC/;";
 
 mkdir -p components
 

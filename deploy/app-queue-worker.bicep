@@ -161,8 +161,8 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
           terminationGracePeriodSeconds: 5
           name: 'engine'
           resources: {
-            cpu: '1'
-            memory: '2Gi'
+            cpu: '2'
+            memory: '4Gi'
           }
           probes: [
             {
@@ -207,6 +207,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
               metadata: {
                 eventHubName: eventHubName
                 consumerGroup: '$Default'
+                blobContainer: 'checkpoints'
               }
               auth: [
                 {
