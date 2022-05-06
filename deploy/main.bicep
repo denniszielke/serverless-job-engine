@@ -9,6 +9,15 @@ module storage 'storage.bicep' = {
   }
 }
 
+module eventhub 'eventhub.bicep' = {
+  name: 'eventhub'
+  params: {
+    location: location
+    eventHubNamespaceName: 'evhbns${resourceGroup().name}'
+    eventHubName: 'requests'
+  }
+}
+
 module logging 'logging.bicep' = {
   name: 'container-app-logging'
   params: {
@@ -27,15 +36,3 @@ module environment 'environment.bicep' = {
     appInsightsInstrumentationKey: logging.outputs.appInsightsInstrumentationKey
   }
 }
-
-// module appqueueworker 'app-queue-worker.bicep' = {
-//   name: 'container-app-js-calc-frontend'
-//   params: {
-//     containerRegistryPath: 'ghcr.io/${containerRegistryOwner}/container-apps/optimizer:${imageTag}'
-//     environmentName: environmentName
-//     storageAccountName: storage.outputs.storageAccountName
-//   }
-// }
-
-
-// az deployment group create -g dzca15cgithub -f ./deploy/apps.bicep -p explorerImageTag=latest -p calculatorImageTag=latest  -p containerRegistryOwner=denniszielke

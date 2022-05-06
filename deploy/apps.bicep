@@ -11,6 +11,15 @@ module storage 'storage.bicep' = {
   }
 }
 
+module eventhub 'eventhub.bicep' = {
+  name: 'eventhub'
+  params: {
+    location: location
+    eventHubNamespaceName: 'evhbns${resourceGroup().name}'
+    eventHubName: 'requests'
+  }
+}
+
 module appqueueworker 'app-queue-worker.bicep' = {
   name: 'container-app-queue-worker'
   params: {
@@ -18,5 +27,6 @@ module appqueueworker 'app-queue-worker.bicep' = {
     environmentName: environmentName
     storageAccountName: storage.outputs.storageAccountName
     storageAccountKey: storage.outputs.storageAccountKey
+    eventHubConnectionString: eventhub.outputs.eventHubNamespaceConnectionString
   }
 }

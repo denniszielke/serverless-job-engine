@@ -61,7 +61,12 @@ bash ./create-config.sh $DEPLOYMENT_NAME
 
 - Start the "Debug Quarkus application (src/Engine) with Dapr Azure Components" Debug mode in VSCode
 
+### Publish messages locally
 
+```
+dapr publish --publish-app-id engine --topic requests --pubsub requests --data '{"guid":"balasbla", "message": "helloe"}'
+
+```
 ## Set up workload Identity for your GitHub Actions to use federated trust
 
 Official documentation:

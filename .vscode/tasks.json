@@ -67,7 +67,8 @@
 			"label": "daprd-debug",
 			"type": "daprd",
 			"dependsOn": "quarkus:dev (src/Engine)",
-			"componentsPath": "./components"
+			"componentsPath": "./components",
+			"logLevel": "debug"
 		},
 		{
 			"appId": "engine",
@@ -80,7 +81,8 @@
 			"label": "daprd-local-debug",
 			"type": "daprd",
 			"dependsOn": "quarkus:dev (src/Engine)",
-			"componentsPath": "./components-local"
+			"componentsPath": "./components-local",
+			"logLevel": "debug"
 		},
 		{
 			"appId": "engine",

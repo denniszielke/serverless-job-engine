@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param storageAccountName string = 'assets${uniqueString(resourceGroup().id)}' 
-param containerName string = 'output'
-param queueName string = 'requests'
+param blobContainerName string = 'output'
+param checkpointContainerName string = 'checkpoints'
 
 resource mediaStorageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
    name: storageAccountName
@@ -16,11 +16,11 @@ resource mediaStorageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
 }
 
 resource outputContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-08-01' = {
-  name: '${mediaStorageAccount.name}/default/${containerName}'
+  name: '${mediaStorageAccount.name}/default/${blobContainerName}'
 }
 
-resource requestQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2021-08-01' = {
-  name: '${mediaStorageAccount.name}/default/${queueName}'
+resource checkpointContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-08-01' = {
+  name: '${mediaStorageAccount.name}/default/${checkpointContainerName}'
 }
 
 output storageAccountName string = mediaStorageAccount.name

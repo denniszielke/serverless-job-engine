@@ -3,6 +3,7 @@ param location string = resourceGroup().location
 param containerRegistryPath string
 param storageAccountName string
 param storageAccountKey string
+param eventHubConnectionString string
 param containerName string = 'output'
 param queueName string = 'requests'
 param stateName string = 'locks'
@@ -78,13 +79,17 @@ resource output 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-pre
 }
 
 resource queueinput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-preview' = {
-  name: '${environmentName}/queue'
+  name: '${environmentName}/requests'
   properties: {
-    componentType : 'bindings.azure.storagequeues'
+    componentType : 'pubsub.azure.eventhubs'
     version: 'v1'
     ignoreErrors: false
     initTimeout: '60s'
     secrets: [
+      {
+        name: 'eventhub-connectionstring'
+        value: eventHubConnectionString
+      }
       {
         name: 'storage-key'
         value: storageAccountKey
@@ -92,28 +97,20 @@ resource queueinput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01
     ]
     metadata : [
       {
-        name: 'storageAccount'
+        name: 'connectionString'
+        secretRef: 'eventhub-connectionstring'
+      }
+      {
+        name: 'storageAccountName'
         value: storageAccountName
-      }
-      {
-        name: 'storageAccessKey'
-        secretRef: 'storage-key'
-      }
-      {
-        name: 'queue'
-        value: queueName
       }  
       {
-        name: 'ttlInSeconds'
-        value: '60'
+        name: 'storageAccountKey'
+        secretRef: 'storage-key'
       }          
       {
-        name: 'decodeBase64'
-        value: 'true'
-      }
-      {
-        name: 'route'
-        value: '/consume'
+        name: 'storageContainerName'
+        value: 'checkpoints'
       }
     ]
     scopes: [
@@ -126,6 +123,9 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
   name: 'engine'
   kind: 'containerapp'
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
     configuration: {
