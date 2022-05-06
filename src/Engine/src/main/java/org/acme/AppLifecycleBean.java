@@ -43,79 +43,79 @@ public class AppLifecycleBean {
         }catch (Exception e) {
             localHostName = "unknown";
         }
-        
-        return;
+    
 
-        int attempts = 3; // we try three times
 
-        do {
+        // int attempts = 3; // we try three times
 
-            try {
+        // do {
 
-                State<String> runningEngineCounterState = daprClient.getState("state", "hosts", String.class).block();
-                String eTag = null;
-                String newHostList = null;
+        //     try {
 
-                if (runningEngineCounterState == null || runningEngineCounterState.getValue() == null || runningEngineCounterState.getError() != null){
-                    newHostList = localHostName;
-                }else
-                {
-                    String existingHosts = runningEngineCounterState.getValue();
-                    eTag = runningEngineCounterState.getEtag();
-                    if (existingHosts.length() > 0 ){
-                        if (existingHosts.contains( ",")){
-                            newHostList = "";
-                            String[] existingHostsArray = existingHosts.split(",");
-                            for (String hostString : existingHostsArray) {                                
-                                if (hostString.length() > 0 && !localHostName.equals(hostString)){
-                                    if (newHostList.length() > 0)
-                                    {
-                                        newHostList = newHostList + ",";
-                                    }
-                                    newHostList = newHostList + existingHosts;
-                                }
-                            } 
-                        }else{
-                            if(existingHosts.length() > 1 && !localHostName.equals(existingHosts)){
-                                newHostList = existingHosts;
-                            }
-                        }
-                    }
+        //         State<String> runningEngineCounterState = daprClient.getState("state", "hosts", String.class).block();
+        //         String eTag = null;
+        //         String newHostList = null;
+
+        //         if (runningEngineCounterState == null || runningEngineCounterState.getValue() == null || runningEngineCounterState.getError() != null){
+        //             newHostList = localHostName;
+        //         }else
+        //         {
+        //             String existingHosts = runningEngineCounterState.getValue();
+        //             eTag = runningEngineCounterState.getEtag();
+        //             if (existingHosts.length() > 0 ){
+        //                 if (existingHosts.contains( ",")){
+        //                     newHostList = "";
+        //                     String[] existingHostsArray = existingHosts.split(",");
+        //                     for (String hostString : existingHostsArray) {                                
+        //                         if (hostString.length() > 0 && !localHostName.equals(hostString)){
+        //                             if (newHostList.length() > 0)
+        //                             {
+        //                                 newHostList = newHostList + ",";
+        //                             }
+        //                             newHostList = newHostList + existingHosts;
+        //                         }
+        //                     } 
+        //                 }else{
+        //                     if(existingHosts.length() > 1 && !localHostName.equals(existingHosts)){
+        //                         newHostList = existingHosts;
+        //                     }
+        //                 }
+        //             }
                    
-                }
+        //         }
 
-                try {
-                    if (eTag != null) {
-                        logger.info("etag is " + eTag);
-                        StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
-                        daprClient.saveState("state", "hosts", eTag, newHostList, operation).block();
-                    }else
-                    {
-                        daprClient.saveState("state", "hosts", newHostList).block();
-                    }
+        //         try {
+        //             if (eTag != null) {
+        //                 logger.info("etag is " + eTag);
+        //                 StateOptions operation = new StateOptions(Consistency.STRONG, Concurrency.LAST_WRITE);
+        //                 daprClient.saveState("state", "hosts", eTag, newHostList, operation).block();
+        //             }else
+        //             {
+        //                 daprClient.saveState("state", "hosts", newHostList).block();
+        //             }
 
-                    attempts = 0;
-                } catch (DaprException ex) {
-                    logger.error(ex.getMessage(), ex);
-                    if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {
-                        // Expected error due to etag mismatch.
-                        System.out.println(String.format("Expected failure. %s", ex.getErrorCode()));
-                    } else {
-                        System.out.println("Unexpected exception.");
-                        throw ex;
-                    }
-                }
+        //             attempts = 0;
+        //         } catch (DaprException ex) {
+        //             logger.error(ex.getMessage(), ex);
+        //             if (ex.getErrorCode().equals(Status.Code.ABORTED.toString())) {
+        //                 // Expected error due to etag mismatch.
+        //                 System.out.println(String.format("Expected failure. %s", ex.getErrorCode()));
+        //             } else {
+        //                 System.out.println("Unexpected exception.");
+        //                 throw ex;
+        //             }
+        //         }
 
-            } catch (Exception e) {
-                logger.error("Something went wrong during dapr state counter update.");
-                logger.error(e.getMessage(), e);
+        //     } catch (Exception e) {
+        //         logger.error("Something went wrong during dapr state counter update.");
+        //         logger.error(e.getMessage(), e);
                 
-            } finally {
-                attempts--;
+        //     } finally {
+        //         attempts--;
                 
-            }
+        //     }
 
-        } while (attempts > 0);
+        // } while (attempts > 0);
     }
 
 }
