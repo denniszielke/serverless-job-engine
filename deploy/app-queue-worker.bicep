@@ -4,6 +4,7 @@ param containerRegistryPath string
 param storageAccountName string
 param storageAccountKey string
 param eventHubConnectionString string
+param eventHubName string
 param containerName string = 'output'
 param queueName string = 'requests'
 param stateName string = 'locks'
@@ -141,6 +142,10 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
           name: 'storage-connectionstring'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=core.windows.net;AccountKey=${storageAccountKey}'
         }
+        {
+          name: 'eventhub-connectionstring'
+          value: eventHubConnectionString
+        }
       ]
       dapr: {
         enabled: true
@@ -196,17 +201,21 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
         maxReplicas: 5
         rules: [
           {
-            name: 'queue-based-autoscaling'
+            name: 'eventhub-based-autoscaling'
             custom: {
-              type: 'azure-queue'
+              type: 'azure-eventhub'
               metadata: {
-                queueName: queueName
-                messageCount: '3'
+                eventHubName: eventHubName
+                consumerGroup: '$Default'
               }
               auth: [
                 {
-                  secretRef: 'storage-connectionstring'
+                  secretRef: 'eventhub-connectionstring'
                   triggerParameter: 'connection'
+                }
+                {
+                  secretRef: 'storage-connectionstring'
+                  triggerParameter: 'storageConnection'
                 }
               ]
             }

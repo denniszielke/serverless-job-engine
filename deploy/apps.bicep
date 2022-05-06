@@ -28,5 +28,6 @@ module appqueueworker 'app-queue-worker.bicep' = {
     storageAccountName: storage.outputs.storageAccountName
     storageAccountKey: storage.outputs.storageAccountKey
     eventHubConnectionString: eventhub.outputs.eventHubNamespaceConnectionString
+    eventHubName: eventhub.outputs.eventHubName
   }
 }

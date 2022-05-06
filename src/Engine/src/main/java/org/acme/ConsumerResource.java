@@ -1,7 +1,6 @@
 package org.acme;
 
 import java.net.InetAddress;
-import java.net.URI;
 import java.util.Calendar;  
 import java.util.HashMap;
 import java.util.Map;
@@ -9,34 +8,17 @@ import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.dapr.client.DaprClientGrpc;
 import io.dapr.client.DaprClient;
-import io.dapr.client.DaprHttpBuilder;
-import io.dapr.client.DaprClientBuilder;
-import io.dapr.client.domain.CloudEvent;
-import io.dapr.client.domain.State;
-import io.dapr.utils.TypeRef;
 import io.dapr.client.domain.CloudEvent;
 
-import io.vertx.core.eventbus.impl.clustered.Serializer;
-import io.vertx.core.json.JsonObject;
-
-import io.grpc.ChannelCredentials;
-import io.grpc.Grpc;
-import io.grpc.ManagedChannelBuilder;
-import io.grpc.TlsChannelCredentials;
-import okhttp3.OkHttpClient;
-
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.inject.Inject;
-import javax.validation.constraints.Null;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.TimeUnit;
 
@@ -60,8 +42,7 @@ public class ConsumerResource {
         try {
             InetAddress address = InetAddress.getLocalHost();
             localHostName = address.getHostName();
-
-            logger.info("localHostName : "+localHostName);
+            logger.info("Triggered by subscription event on " + localHostName);
         }catch (Exception e) {
             logger.error("Something went wrong when retrieving hostname.");
             return Response.status(Status.BAD_REQUEST).build();
@@ -69,6 +50,8 @@ public class ConsumerResource {
 
         CloudEvent event = null;
         JobRequest request = null;
+
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         try{
             event = CloudEvent.deserialize(body);
@@ -102,6 +85,7 @@ public class ConsumerResource {
                 return Response.status(Status.BAD_REQUEST).build();
             }
 
+            // here we simulate compute heavy work.
             TimeUnit.MILLISECONDS.sleep(20000);
             
             String message = "my message from " + body + " has been processed on host " + localHostName;

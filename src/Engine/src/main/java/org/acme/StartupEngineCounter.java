@@ -19,7 +19,7 @@ import io.dapr.client.domain.TransactionalStateOperation;
 import io.dapr.client.domain.StateOptions.Concurrency;
 import io.dapr.client.domain.StateOptions.Consistency;
 import io.dapr.exceptions.DaprException;
-import io.dapr.v1.CommonProtos.Etag;
+import java.util.concurrent.TimeUnit;
 import io.grpc.Status;
 
 @Singleton
@@ -36,10 +36,11 @@ public class StartupEngineCounter {
         if (Boolean.TRUE.equals(counted)){
             return;
         }
-
+     
         String localHostName = null;
 
         try {
+            TimeUnit.MILLISECONDS.sleep(1000);
             InetAddress address = InetAddress.getLocalHost();
             localHostName = address.getHostName();
 

@@ -3,19 +3,18 @@ package org.acme;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.dapr.client.DaprClient;
 
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.inject.Inject;
-import javax.validation.constraints.Null;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 
@@ -43,8 +42,7 @@ public class PublisherResource {
         try {
             InetAddress address = InetAddress.getLocalHost();
             localHostName = address.getHostName();
-
-            logger.info("localHostName : "+localHostName);
+            logger.info("Triggered by publish event on " + localHostName);
         }catch (Exception e) {
             logger.error("Something went wrong when retrieving hostname.");
         }
@@ -52,7 +50,6 @@ public class PublisherResource {
         try {
             
             logger.info("message " + request.guid + " has been received by " + localHostName + " with message " + request.message);
-            String message = "{ 'guid': '" + request.guid + "', 'message': '" + request.message + "'}";
 
             Map<String,String> metadata = new HashMap<>();
             metadata.put("MessageId", request.guid);
