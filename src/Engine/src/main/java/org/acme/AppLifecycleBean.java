@@ -32,18 +32,20 @@ public class AppLifecycleBean {
     DaprClient daprClient;
 
     void onStop(@Observes ShutdownEvent ev) {               
-        logger.info("The application is stopping...");
-
+        
         String localHostName = null;
 
         try {
             InetAddress address = InetAddress.getLocalHost();
             localHostName = address.getHostName();
+            logger.info("The application is stopping on " + localHostName);
 
         }catch (Exception e) {
             localHostName = "unknown";
         }
         
+        return;
+
         int attempts = 3; // we try three times
 
         do {
