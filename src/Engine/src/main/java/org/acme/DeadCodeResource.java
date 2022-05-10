@@ -2,6 +2,8 @@ package org.acme;
 
 import java.lang.reflect.Array;
 import java.net.InetAddress;
+
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -27,15 +29,13 @@ public class DeadCodeResource {
     DaprClient daprClient;
 
 
-    @POST
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response receive2(byte[] body) {
         
-        CloudEvent event = null;
         CloudEvent event2 = null;
 
         try{
-            event = new CloudEvent<>();
             event2 = new CloudEvent<>("id", "source", "type", "specversion", body);
             
         }catch (Exception e) {
@@ -49,12 +49,12 @@ public class DeadCodeResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response receive(byte[] body) {
+    public Response receive3(byte[] body) {
         
         CloudEvent event = null;
 
         try{
-            event = new CloudEvent<>();
+            event = new CloudEvent<>("id", "source", "type", "specversion", "datacontenttype", body);
             
         }catch (Exception e) {
             logger.error("Something went wrong during dapr interaction while processing counter state.");
