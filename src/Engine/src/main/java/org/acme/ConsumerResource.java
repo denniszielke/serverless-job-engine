@@ -38,9 +38,9 @@ public class ConsumerResource {
     public Response receive(byte[] body) {
 
         String localHostName = null;
+        JobRequest request = null;
 
         try {
-            TimeUnit.MILLISECONDS.sleep(1000);
             InetAddress address = InetAddress.getLocalHost();
             localHostName = address.getHostName();
             logger.info("Triggered by subscription event on " + localHostName);
@@ -50,13 +50,17 @@ public class ConsumerResource {
         }
 
         CloudEvent event = null;
-        JobRequest request = null;
 
         try{
+            HashMap<String, String> data;
             event = CloudEvent.deserialize(body);
             logger.info("Consumed contenttype: " + event.getDatacontenttype());
             logger.info("Consumed event id: " + event.getId());
-            request = OBJECT_MAPPER.convertValue(event.getData(), JobRequest.class);
+            data = OBJECT_MAPPER.convertValue(event.getData(), HashMap.class);
+            request = new JobRequest();
+            request.guid = data.get("MessageId");
+            request.message = data.get("MessageId");
+            
             logger.info("message " + request.guid + " has been received by " + localHostName + " with message " + request.message);
         }catch (Exception e) {
             logger.error("Something went wrong when retrieving cloud event.");

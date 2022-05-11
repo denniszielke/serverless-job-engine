@@ -55,7 +55,12 @@ public class PublisherResource {
             metadata.put("MessageId", request.guid);
             metadata.put("ContentType", "application/json");
             
-            daprClient.publishEvent("requests", "requests", request, metadata).block();
+            Map<String,String> data = new HashMap<>();
+            data.put("MessageId", request.guid);
+            data.put("Host", localHostName);
+            data.put("Message", request.message);
+
+            daprClient.publishEvent("requests", "requests", data, metadata).block();
 
             logger.info("published message on topic requests"); 
             request.message = "OK";

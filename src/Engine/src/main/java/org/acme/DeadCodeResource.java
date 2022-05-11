@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.net.InetAddress;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -29,7 +30,7 @@ public class DeadCodeResource {
     DaprClient daprClient;
 
 
-    @GET
+    @PATCH
     @Produces(MediaType.APPLICATION_JSON)
     public Response receive2(byte[] body) {
         

@@ -3,6 +3,7 @@
 
 # Log file
 *.log
+Issues.md
 
 components/output.yaml
 components/queue.yaml

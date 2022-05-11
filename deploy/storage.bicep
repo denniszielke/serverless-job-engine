@@ -23,5 +23,13 @@ resource checkpointContainer 'Microsoft.Storage/storageAccounts/blobServices/con
   name: '${mediaStorageAccount.name}/default/${checkpointContainerName}'
 }
 
+resource startupQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2021-08-01' = {
+  name: '${mediaStorageAccount.name}/default/startup'
+}
+
+resource shutdownQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2021-08-01' = {
+  name: '${mediaStorageAccount.name}/default/shutdown'
+}
+
 output storageAccountName string = mediaStorageAccount.name
 output storageAccountKey string = '${listKeys(mediaStorageAccount.id, mediaStorageAccount.apiVersion).keys[0].value}'

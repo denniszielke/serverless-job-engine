@@ -38,13 +38,12 @@ public class AppLifecycleBean {
         try {
             InetAddress address = InetAddress.getLocalHost();
             localHostName = address.getHostName();
-            logger.info("The application is stopping on " + localHostName);
+            logger.info("The application is stopping on host " + localHostName);
 
         }catch (Exception e) {
             localHostName = "unknown";
         }
     
-
 
         // int attempts = 3; // we try three times
 
