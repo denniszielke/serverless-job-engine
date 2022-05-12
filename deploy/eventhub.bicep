@@ -26,6 +26,11 @@ resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' = {
   }
 }
 
+resource symbolicname 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2021-11-01' = {
+  name: 'engine'
+  parent: eventHub
+}
+
 resource eventHub_ListenSend 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2021-01-01-preview' = {
   parent: eventHub
   name: 'ListenSend'

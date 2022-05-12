@@ -35,7 +35,7 @@ public class ConsumerResource {
     @POST
     // @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response receive(byte[] body) {
+    public Response receive(CloudEvent<HashMap> event) {
 
         String localHostName = null;
         JobRequest request = null;
@@ -49,11 +49,11 @@ public class ConsumerResource {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        CloudEvent event = null;
+        // CloudEvent event = null;
 
         try{
             HashMap<String, String> data;
-            event = CloudEvent.deserialize(body);
+            // event = CloudEvent.deserialize(body);
             logger.info("Consumed contenttype: " + event.getDatacontenttype());
             logger.info("Consumed event id: " + event.getId());
             data = OBJECT_MAPPER.convertValue(event.getData(), HashMap.class);
@@ -91,7 +91,7 @@ public class ConsumerResource {
             // here we simulate compute heavy work.
             TimeUnit.MILLISECONDS.sleep(20000);
             
-            String message = "my message from " + body + " has been processed on host " + localHostName;
+            String message = "my message " + request.guid + " has been processed on host " + localHostName;
             byte[] bytes = message.getBytes();
             byte[] encodedBytes = Base64.getUrlEncoder().encode(bytes);
 

@@ -31,7 +31,7 @@ public class DaprSubscriptionResource {
                 Json.createObjectBuilder()
                     .add("pubsubname", "requests")
                     .add("topic", "requests")
-                    .add("route", "/requests")
+                    .add("route", "requests")
             ).build();
        
         

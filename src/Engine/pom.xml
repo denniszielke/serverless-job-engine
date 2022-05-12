@@ -79,6 +79,12 @@
       <groupId>io.dapr</groupId>
       <artifactId>dapr-sdk</artifactId>
       <version>1.5.0</version>
+      <exclusions>
+        <exclusion>
+              <artifactId>grpc-netty-shaded</artifactId>
+              <groupId>io.grpc</groupId>
+          </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
