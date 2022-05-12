@@ -85,13 +85,13 @@ public class ConsumerResource {
             else{
                 logger.info("already busy");
                 daprClient.saveState("state", localHostName, "busy").block(); 
-                return Response.status(Status.BAD_REQUEST).build();
+                return Response.status(Status.TOO_MANY_REQUESTS).build();
             }
 
             // here we simulate compute heavy work.
             TimeUnit.MILLISECONDS.sleep(20000);
             
-            String message = "my message " + request.guid + " has been processed on host " + localHostName;
+            String message = "my message " + request.guid + " has been processed on host " + localHostName + " with message " + request.message;
             byte[] bytes = message.getBytes();
             byte[] encodedBytes = Base64.getUrlEncoder().encode(bytes);
 

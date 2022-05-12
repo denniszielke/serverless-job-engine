@@ -40,7 +40,6 @@ public class StartupEngineCounter {
         String localHostName = null;
 
         try {
-            TimeUnit.MILLISECONDS.sleep(1000);
             InetAddress address = InetAddress.getLocalHost();
             localHostName = address.getHostName();
 
