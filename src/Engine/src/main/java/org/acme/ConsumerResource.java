@@ -59,7 +59,7 @@ public class ConsumerResource {
             data = OBJECT_MAPPER.convertValue(event.getData(), HashMap.class);
             request = new JobRequest();
             request.guid = data.get("MessageId");
-            request.message = data.get("MessageId");
+            request.message = data.get("Message");
             
             logger.info("message " + request.guid + " has been received by " + localHostName + " with message " + request.message);
         }catch (Exception e) {
