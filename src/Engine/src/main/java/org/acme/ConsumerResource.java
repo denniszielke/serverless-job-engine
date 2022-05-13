@@ -32,36 +32,27 @@ public class ConsumerResource {
     @Inject
     DaprClient daprClient;
 
+    @Inject
+    Hostname hostname;
+
     @POST
-    // @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response receive(CloudEvent<HashMap> event) {
-
-        String localHostName = null;
         JobRequest request = null;
+        String localHostName = hostname.getHostName();
 
-        try {
-            InetAddress address = InetAddress.getLocalHost();
-            localHostName = address.getHostName();
-            logger.info("Triggered by subscription event on " + localHostName);
-        }catch (Exception e) {
-            logger.error("Something went wrong when retrieving hostname.");
-            return Response.status(Status.BAD_REQUEST).build();
-        }
-
-        // CloudEvent event = null;
+        logger.info("Triggered by subscription event on %s", localHostName);
 
         try{
             HashMap<String, String> data;
-            // event = CloudEvent.deserialize(body);
-            logger.info("Consumed contenttype: " + event.getDatacontenttype());
-            logger.info("Consumed event id: " + event.getId());
+            logger.info(String.format("Consumed contenttype: %s", event.getDatacontenttype()));
+            logger.info(String.format("Consumed event id: %s", event.getId()));
             data = OBJECT_MAPPER.convertValue(event.getData(), HashMap.class);
             request = new JobRequest();
             request.guid = data.get("MessageId");
             request.message = data.get("Message");
             
-            logger.info("message " + request.guid + " has been received by " + localHostName + " with message " + request.message);
+            logger.info(String.format("message %s has been received by %s with message %s.", request.guid, localHostName, request.message));
         }catch (Exception e) {
             logger.error("Something went wrong when retrieving cloud event.");
             logger.error(e.getMessage(), e);
@@ -91,7 +82,8 @@ public class ConsumerResource {
             // here we simulate compute heavy work.
             TimeUnit.MILLISECONDS.sleep(20000);
             
-            String message = "my message " + request.guid + " has been processed on host " + localHostName + " with message " + request.message;
+            String message = String.format("my message %s has been processed on host %s with message %s.", request.guid, localHostName, request.message);
+            logger.info(message);
             byte[] bytes = message.getBytes();
             byte[] encodedBytes = Base64.getUrlEncoder().encode(bytes);
 

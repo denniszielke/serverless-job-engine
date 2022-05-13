@@ -30,6 +30,9 @@ public class StartupEngineCounter {
     @Inject
     DaprClient daprClient;
 
+    @Inject
+    Hostname hostname;
+
     private Boolean counted = false;
 
     void check() {
@@ -37,17 +40,9 @@ public class StartupEngineCounter {
             return;
         }
      
-        String localHostName = null;
+        String localHostName = hostname.getHostName();
 
-        try {
-            InetAddress address = InetAddress.getLocalHost();
-            localHostName = address.getHostName();
-
-        }catch (Exception e) {
-            localHostName = "unknown";
-        }
-
-        logger.info("The application is starting up on host " + localHostName);
+        logger.info("The application is starting up on host {0}.", localHostName);
 
         // int attempts = 3; // we try three times
 

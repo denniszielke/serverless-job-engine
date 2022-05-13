@@ -26,26 +26,23 @@ public class PublisherResource {
     @Inject
     DaprClient daprClient;
 
+    @Inject
+    Hostname hostname;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response publish(JobRequest request) {
 
-        String localHostName = null;
+        String localHostName = hostname.getHostName();
+
+        logger.info("Triggered by publish event on " + localHostName);
 
         if (request == null || request.guid == null){
             return Response.status(Status.BAD_REQUEST).build();
         }
 
         logger.info("Received publish body: " + request.message);
-
-        try {
-            InetAddress address = InetAddress.getLocalHost();
-            localHostName = address.getHostName();
-            logger.info("Triggered by publish event on " + localHostName);
-        }catch (Exception e) {
-            logger.error("Something went wrong when retrieving hostname.");
-        }
     
         try {
             
