@@ -104,10 +104,12 @@ public class ConsumerResource {
             logger.info("marking engine instance as free");
             daprClient.saveState("state", request.guid, "job completed by " + localHostName).block(); 
             daprClient.saveState("state", localHostName, "free").block(); 
+            lock.setBusy(false);
             registry.counter("messages_counter", Tags.of("name", "processed")).increment();
         }catch (Exception e) {
             logger.error("Something went wrong during dapr interaction while processing queues.");
             logger.error(e.getMessage(), e);
+            lock.setBusy(false);
             return Response.status(Status.BAD_REQUEST).build();
         }
 
