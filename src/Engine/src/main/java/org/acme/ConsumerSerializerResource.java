@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.dapr.client.DaprClient;
+import io.dapr.client.ObjectSerializer;
 import io.dapr.client.domain.CloudEvent;
 
 import javax.ws.rs.Path;
@@ -22,11 +23,8 @@ import javax.ws.rs.POST;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.TimeUnit;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tags;
-
 @Path("/requests")
-public class ConsumerResource {
+public class ConsumerSerializerResource {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -36,17 +34,11 @@ public class ConsumerResource {
     DaprClient daprClient;
 
     @Inject
-    ProcessingLockService lock;
-
-    @Inject
     Hostname hostname;
-
-    @Inject
-    MeterRegistry registry;
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
-    public Response receive(CloudEvent<HashMap> event) {
+    public Response receive(byte[] body) {
         JobRequest request = null;
         String localHostName = hostname.getHostName();
 
@@ -54,13 +46,11 @@ public class ConsumerResource {
 
         try{
             HashMap<String, String> data;
-            logger.info(String.format("Consumed contenttype: %s", event.getDatacontenttype()));
-            logger.info(String.format("Consumed event id: %s", event.getId()));
-            data = OBJECT_MAPPER.convertValue(event.getData(), HashMap.class);
+
             request = new JobRequest();
-            request.guid = data.get("MessageId");
-            request.message = data.get("Message");
-            registry.counter("messages_counter", Tags.of("name", "received")).increment();
+            // request.guid = data.get("MessageId");
+            // request.message = data.get("Message");
+            
             logger.info(String.format("message %s has been received by %s with message %s.", request.guid, localHostName, request.message));
         }catch (Exception e) {
             logger.error("Something went wrong when retrieving cloud event.");
@@ -74,17 +64,17 @@ public class ConsumerResource {
 
         try {
 
-            if (!lock.isBusy())
+            String currentState = daprClient.getState("state", localHostName, String.class).block().getValue();
+            
+            if(currentState == null || currentState.isBlank() || currentState.equals("free"))
             {
                 logger.info("accepting new job");
                 daprClient.saveState("state", localHostName, "busy").block(); 
                 daprClient.saveState("state", request.guid, "job accepted by " + localHostName).block(); 
-                registry.counter("messages_counter", Tags.of("name", "accepted")).increment();
-                lock.setBusy(true);
-            }            
+            }
             else{
                 logger.info("already busy");
-                registry.counter("messages_counter", Tags.of("name", "blocked")).increment();                
+                daprClient.saveState("state", localHostName, "busy").block(); 
                 return Response.status(Status.TOO_MANY_REQUESTS).build();
             }
 
@@ -104,7 +94,6 @@ public class ConsumerResource {
             logger.info("marking engine instance as free");
             daprClient.saveState("state", request.guid, "job completed by " + localHostName).block(); 
             daprClient.saveState("state", localHostName, "free").block(); 
-            registry.counter("messages_counter", Tags.of("name", "processed")).increment();
         }catch (Exception e) {
             logger.error("Something went wrong during dapr interaction while processing queues.");
             logger.error(e.getMessage(), e);

@@ -34,8 +34,8 @@ curl -X POST -H 'Content-Type: application/json' http://localhost:8080/publish -
 ### Manual deployment of azure resources with azure cli
 
 ```
-DEPLOYMENT_NAME="dzaca23" # here the deployment
-LOCATION="northeurope" # azure region 
+DEPLOYMENT_NAME="dzaca64" # here the deployment
+LOCATION="westeurope" # azure region 
 bash ./deploy-infra-bicep.sh $DEPLOYMENT_NAME $LOCATION
 
 ```
@@ -43,18 +43,18 @@ bash ./deploy-infra-bicep.sh $DEPLOYMENT_NAME $LOCATION
 ### Manual deployment of app into existing Azure Container App Environment with azure cli
 
 ```
-DEPLOYMENT_NAME="dzaca23" # here the deployment
-LOCATION="northeurope" # azure region 
+DEPLOYMENT_NAME="dzaca64" # here the deployment
+LOCATION="westeurope" # azure region 
 GHUSER="denniszielke" # replace with your user name
 IMAGE_TAG="latest"
-bash ./deploy-infra-apps.sh $DEPLOYMENT_NAME $GHUSER $IMAGE_TAG
+bash ./deploy-apps-bicep.sh $DEPLOYMENT_NAME $GHUSER $IMAGE_TAG $AZURE_TENANT_ID $AZURE_CLIENT_ID $AZURE_CLIENT_SECRET
 
 ```
 
 ### Debug locally with azure resource components
 
 ```
-DEPLOYMENT_NAME="dzaca23" # here the deployment
+DEPLOYMENT_NAME="dzaca64" # here the deployment
 bash ./create-config.sh $DEPLOYMENT_NAME
 
 ```
@@ -77,9 +77,9 @@ For this repository to your own account.
 We will create a service principal and grant it permissions on a dedicated resource group
 
 ```
-DEPLOYMENT_NAME="dzaca23" # here the deployment
+DEPLOYMENT_NAME="dzaca64" # here the deployment
 RESOURCE_GROUP=$DEPLOYMENT_NAME # here enter the resources group
-LOCATION="northeurope" # azure region 
+LOCATION="westeurope" # azure region 
 AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv) # here enter your subscription id
 GHUSER="denniszielke" # replace with your user name
 GHREPO="serverless-job-engine" # here the repo name

@@ -9,6 +9,15 @@ param containerName string = 'output'
 param queueName string = 'requests'
 param stateName string = 'locks'
 
+param clientId string
+param clientSecret string
+param tenantId string
+
+resource uami 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'engine-msi'
+  location: location
+}
+
 resource state 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01-preview' = {
   name: '${environmentName}/state'
   properties: {
@@ -125,7 +134,10 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
   kind: 'containerapp'
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+        '${uami}': {}
+    }
   }
   properties: {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
@@ -161,8 +173,8 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
           terminationGracePeriodSeconds: 5
           name: 'engine'
           resources: {
-            cpu: '2'
-            memory: '4Gi'
+            cpu: '1.5'
+            memory: '3Gi'
           }
           probes: [
             {
@@ -192,6 +204,41 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
             {
               name: 'VALUE'
               value: '456'
+            }
+          ]
+        }
+        {
+          image: 'denniszielke/telegraf'
+          terminationGracePeriodSeconds: 5
+          name: 'telegraf'
+          resources: {
+            cpu: '0.5'
+            memory: '1Gi'
+          }          
+          env:[
+            {
+              name: 'AZURE_TENANT_ID'
+              value: tenantId
+            }
+            {
+              name: 'AZURE_CLIENT_ID'
+              value: clientId
+            }
+            {
+              name: 'AZURE_CLIENT_SECRET'
+              value: clientSecret
+            }
+            {
+              name: 'RESOURCE_ID'
+              value: '${resourceGroup().id}/providers/Microsoft.App/containerapps/engine'
+            }
+            {
+              name: 'LOCATION'
+              value: location
+            }
+            {
+              name: 'INSTANCE'
+              value: 'engine'
             }
           ]
         }

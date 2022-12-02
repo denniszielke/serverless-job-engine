@@ -14,9 +14,12 @@ public class HostResource {
     @Inject
     Hostname hostname;
 
+    @Inject
+    ProcessingLockService lock;
+
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String host() {      
-        return  hostname.getHostName();
+        return  hostname.getHostName() + " busy " + lock.isBusy();
     }
 }

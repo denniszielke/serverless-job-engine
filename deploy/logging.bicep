@@ -30,6 +30,33 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08
   })
 }
 
+resource azureMonitorWorkspace 'Microsoft.Monitor/accounts@2021-06-03-preview' = {
+  name: logAnalyticsWorkspaceName
+  location: location
+  properties: { 
+  }
+}
+
+resource grafana 'Microsoft.Dashboard/grafana@2022-08-01' = {
+  name: logAnalyticsWorkspaceName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    zoneRedundancy: 'Disabled'
+    apiKey: 'Disabled'
+    deterministicOutboundIP: 'Disabled'
+    grafanaIntegrations: {
+      azureMonitorWorkspaceIntegrations: [
+        {
+          azureMonitorWorkspaceResourceId: azureMonitorWorkspace.id
+        }
+      ]
+    }
+  }
+}
+
 output logAnalyticsCustomerId string = logAnalyticsWorkspace.properties.customerId
 output logAnalyticsSharedKey string = logAnalyticsWorkspace.listKeys().primarySharedKey
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey

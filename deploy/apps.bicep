@@ -3,6 +3,9 @@ param environmentName string = 'env-${resourceGroup().name}'
 param imageTag string
 param containerRegistryOwner string
 
+param clientId string
+param clientSecret string
+param tenantId string
 
 module storage 'storage.bicep' = {
   name: 'container-app-storage'
@@ -29,5 +32,8 @@ module appqueueworker 'app-queue-worker.bicep' = {
     storageAccountKey: storage.outputs.storageAccountKey
     eventHubConnectionString: eventhub.outputs.eventHubNamespaceConnectionString
     eventHubName: eventhub.outputs.eventHubName
+    clientId: clientId
+    clientSecret: clientSecret
+    tenantId: tenantId
   }
 }
