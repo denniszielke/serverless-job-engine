@@ -50,7 +50,7 @@ public class ConsumerResource {
         JobRequest request = null;
         String localHostName = hostname.getHostName();
 
-        logger.info("Triggered by subscription event on %s", localHostName);
+        logger.info(String.format("Triggered by subscription event on %s", localHostName));
 
         try{
             HashMap<String, String> data;
@@ -76,11 +76,11 @@ public class ConsumerResource {
 
             if (!lock.isBusy())
             {
+                lock.setBusy(true);
                 logger.info("accepting new job");
                 daprClient.saveState("state", localHostName, "busy").block(); 
                 daprClient.saveState("state", request.guid, "job accepted by " + localHostName).block(); 
-                registry.counter("messages_counter", Tags.of("name", "accepted")).increment();
-                lock.setBusy(true);
+                registry.counter("messages_counter", Tags.of("name", "accepted")).increment();                
             }            
             else{
                 logger.info("already busy");
@@ -88,6 +88,7 @@ public class ConsumerResource {
                 return Response.status(Status.TOO_MANY_REQUESTS).build();
             }
 
+            logger.info(String.format("Instance %s is now processing %s", localHostName, request.guid));            
             // here we simulate compute heavy work.
             TimeUnit.MILLISECONDS.sleep(20000);
             

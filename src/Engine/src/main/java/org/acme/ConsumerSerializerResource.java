@@ -23,7 +23,7 @@ import javax.ws.rs.POST;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.TimeUnit;
 
-@Path("/requests")
+@Path("/requestsold")
 public class ConsumerSerializerResource {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
