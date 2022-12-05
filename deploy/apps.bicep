@@ -6,6 +6,7 @@ param containerRegistryOwner string
 param clientId string
 param clientSecret string
 param tenantId string
+param monitoring_resourceId string
 
 module storage 'storage.bicep' = {
   name: 'container-app-storage'
@@ -35,5 +36,6 @@ module appqueueworker 'app-queue-worker.bicep' = {
     clientId: clientId
     clientSecret: clientSecret
     tenantId: tenantId
+    monitoring_resourceId: monitoring_resourceId
   }
 }

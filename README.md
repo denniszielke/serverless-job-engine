@@ -47,7 +47,8 @@ DEPLOYMENT_NAME="dzaca64" # here the deployment
 LOCATION="westeurope" # azure region 
 GHUSER="denniszielke" # replace with your user name
 IMAGE_TAG="latest"
-bash ./deploy-apps-bicep.sh $DEPLOYMENT_NAME $GHUSER $IMAGE_TAG $AZURE_TENANT_ID $AZURE_CLIENT_ID $AZURE_CLIENT_SECRET
+MONITORING_RESOURCE_ID="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$DEPLOYMENT_NAME/providers/Microsoft.App/containerapps/engine"
+bash ./deploy-apps-bicep.sh $DEPLOYMENT_NAME $GHUSER $IMAGE_TAG $AZURE_TENANT_ID $AZURE_CLIENT_ID $AZURE_CLIENT_SECRET $MONITORING_RESOURCE_ID
 
 ```
 

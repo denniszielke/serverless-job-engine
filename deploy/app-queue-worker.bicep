@@ -12,6 +12,7 @@ param stateName string = 'locks'
 param clientId string
 param clientSecret string
 param tenantId string
+param monitoring_resourceId string
 
 resource uami 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: 'engine-msi'
@@ -134,10 +135,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
   kind: 'containerapp'
   location: location
   identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-        '${uami}': {}
-    }
+    type: 'SystemAssigned'
   }
   properties: {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
@@ -230,7 +228,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
             }
             {
               name: 'RESOURCE_ID'
-              value: '${resourceGroup().id}/providers/Microsoft.App/containerapps/engine'
+              value: monitoring_resourceId
             }
             {
               name: 'LOCATION'
@@ -239,6 +237,10 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
             {
               name: 'INSTANCE'
               value: 'engine'
+            }
+            {
+              name: 'PROMETHEUS_URL'
+              value: 'http://localhost:8080/q/metrics'
             }
           ]
         }
