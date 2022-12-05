@@ -6,8 +6,11 @@ The objective is ensure the following requirements:
 - Fast scale up time of container runtime by using Quarkus native images
 - Automatic scale to 0 using Keda in Azure Container Apps
 - Ensuring that each instance is only processing one job at a time
+- Publishin application and runtime metrics via Micrometer
+- Scrapping metrics via telegraf sidecar and publish them to Azure Monitor for Prometheus
+- Using Azure Managed Grafana to build dashboards on jobengine execution times
 
-![](/architecture.png)
+![](/img/architecture.png)
 
 ## Local installation
 
@@ -95,3 +98,7 @@ AZURE_CLIENT_OBJECT_ID="$(az ad app show --id ${AZURE_CLIENT_ID} --query objectI
 az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$AZURE_CLIENT_OBJECT_ID/federatedIdentityCredentials" --body "{'name':'$DEPLOYMENT_NAME','issuer':'https://token.actions.githubusercontent.com','subject':'repo:$GHUSER/$GHREPO$GHREPO_BRANCH','description':'GitHub Actions for $DEPLOYMENT_NAME','audiences':['api://AzureADTokenExchange']}"
 
 ```
+
+## Monitoring builtin and custom Java metrics using Micrometer
+Using the telegraf sidecar we can public builtin and custom metrics via Micrometer, scrap the `/q/metrics` endpoint via a dedicated telegraf sidecar, send metrics to the Azure Monitor managed service for Prometheus (https://learn.microsoft.com/en-Us/azure/azure-monitor/essentials/prometheus-metrics-overview) and query the results via PromQL in Azure Managed Grafana:
+![](/img/graph.png)
