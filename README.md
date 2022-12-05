@@ -40,7 +40,6 @@ curl -X POST -H 'Content-Type: application/json' http://localhost:8080/publish -
 DEPLOYMENT_NAME="dzaca64" # here the deployment
 LOCATION="westeurope" # azure region 
 bash ./deploy-infra-bicep.sh $DEPLOYMENT_NAME $LOCATION
-
 ```
 
 ### Manual deployment of app into existing Azure Container App Environment with azure cli
@@ -50,9 +49,7 @@ DEPLOYMENT_NAME="dzaca64" # here the deployment
 LOCATION="westeurope" # azure region 
 GHUSER="denniszielke" # replace with your user name
 IMAGE_TAG="latest"
-MONITORING_RESOURCE_ID="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$DEPLOYMENT_NAME/providers/Microsoft.App/containerapps/engine"
-bash ./deploy-apps-bicep.sh $DEPLOYMENT_NAME $GHUSER $IMAGE_TAG $AZURE_TENANT_ID $AZURE_CLIENT_ID $AZURE_CLIENT_SECRET $MONITORING_RESOURCE_ID
-
+bash ./deploy-apps-bicep.sh $DEPLOYMENT_NAME $GHUSER $IMAGE_TAG
 ```
 
 ### Debug locally with azure resource components
@@ -96,7 +93,6 @@ AZURE_CLIENT_ID=$(az ad sp create-for-rbac --name "$DEPLOYMENT_NAME" --role cont
 AZURE_CLIENT_OBJECT_ID="$(az ad app show --id ${AZURE_CLIENT_ID} --query objectId -o tsv)"
 
 az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$AZURE_CLIENT_OBJECT_ID/federatedIdentityCredentials" --body "{'name':'$DEPLOYMENT_NAME','issuer':'https://token.actions.githubusercontent.com','subject':'repo:$GHUSER/$GHREPO$GHREPO_BRANCH','description':'GitHub Actions for $DEPLOYMENT_NAME','audiences':['api://AzureADTokenExchange']}"
-
 ```
 
 ## Monitoring builtin and custom Java metrics using Micrometer

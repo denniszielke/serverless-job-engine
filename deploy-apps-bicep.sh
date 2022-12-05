@@ -6,10 +6,6 @@ set -e
 DEPLOYMENT_NAME="$1" # here enter unique deployment name (ideally short and with letters for global uniqueness)
 REGISTRY="$2"
 VERSION="$3" # version tag showing up in app
-AZURE_TENANT_ID="$4"
-AZURE_CLIENT_ID="$5"
-AZURE_CLIENT_SECRET="$6"
-MONITORING_RESOURCE_ID="$7"
 
 if [ "$DEPLOYMENT_NAME" == "" ]; then
 echo "No project name provided - aborting"
@@ -27,6 +23,4 @@ AZURE_CORE_ONLY_SHOW_ERRORS="True"
 
 az deployment group create -g $DEPLOYMENT_NAME -f deploy/apps.bicep \
           -p imageTag=$VERSION \
-          -p containerRegistryOwner=$REGISTRY \
-          -p monitoring_resourceId=$MONITORING_RESOURCE_ID \
-          -p tenantId=$AZURE_TENANT_ID -p clientId=$AZURE_CLIENT_ID -p clientSecret=$AZURE_CLIENT_SECRET
+          -p containerRegistryOwner=$REGISTRY

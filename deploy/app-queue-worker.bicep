@@ -9,11 +9,6 @@ param containerName string = 'output'
 param queueName string = 'requests'
 param stateName string = 'locks'
 
-param clientId string
-param clientSecret string
-param tenantId string
-param monitoring_resourceId string
-
 resource uami 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: 'engine-msi'
   location: location
@@ -130,12 +125,27 @@ resource queueinput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01
   }
 }
 
+var metricsPublisherlRoleDefinitionId = '/providers/Microsoft.Authorization/roleDefinitions/3913510d-42f4-4e42-8a64-420c390055eb'
+
+resource keyVaultRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+  name: guid(subscription().subscriptionId, uami.id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: metricsPublisherlRoleDefinitionId
+    principalId: uami.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
   name: 'engine'
   kind: 'containerapp'
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${uami.id}': {}
+    }
   }
   properties: {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
@@ -216,19 +226,15 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
           env:[
             {
               name: 'AZURE_TENANT_ID'
-              value: tenantId
+              value: '${subscription().tenantId}'
             }
             {
               name: 'AZURE_CLIENT_ID'
-              value: clientId
-            }
-            {
-              name: 'AZURE_CLIENT_SECRET'
-              value: clientSecret
+              value: uami.properties.clientId
             }
             {
               name: 'RESOURCE_ID'
-              value: monitoring_resourceId
+              value: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.App/containerapps/engine'
             }
             {
               name: 'LOCATION'
