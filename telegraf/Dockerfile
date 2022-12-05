@@ -34,5 +34,6 @@ EXPOSE 8125/udp 8092/udp 8094
 
 COPY entrypoint.sh /entrypoint.sh
 COPY telegraf_monitor.conf /etc/telegraf/telegraf.conf
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["telegraf"]
