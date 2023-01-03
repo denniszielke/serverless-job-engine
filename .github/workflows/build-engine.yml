@@ -25,11 +25,11 @@ jobs:
     env:
       MVN: mvn --show-version --batch-mode
     steps:
-      - name: jdk11
+      - name: jdk17
         uses: actions/setup-java@v2
         with:
-          java-version: "11"
-          distribution: "adopt"
+          java-version: "17"
+          distribution: "microsoft"
       - name: GraalVM 21.2.0
         uses: ayltai/setup-graalvm@v1
         with:
