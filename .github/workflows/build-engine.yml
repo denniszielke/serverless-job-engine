@@ -33,8 +33,8 @@ jobs:
       - name: GraalVM 21.2.0
         uses: ayltai/setup-graalvm@v1
         with:
-          java-version: 11
-          graalvm-version: 21.2.0
+          java-version: 17
+          graalvm-version: 22.3.0
           native-image: true
       - name: checkout
         uses: actions/checkout@v2
@@ -72,7 +72,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: mvn package -Pnative -DskipTests -Dquarkus.native.container-build=true -Dquarkus.container-image.push=true
-        run: $MVN package -Pnative -DskipTests -Dquarkus.native.container-build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.image=ghcr.io/${{ github.repository_owner }}/serverless-job-engine/$APP_NAME:${GITHUB_RUN_ID} '-Dquarkus.jib.labels."org.opencontainers.image.revision"='$GITHUB_SHA
+        run: $MVN package -Pnative -DskipTests -Dquarkus.native.container-build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.image=ghcr.io/${{ github.repository_owner }}/serverless-job-engine/$APP_NAME:${GITHUB_RUN_ID}
       - name: tag latest
         run: |
           docker tag ghcr.io/${{ github.repository_owner }}/serverless-job-engine/$APP_NAME:${GITHUB_RUN_ID} ghcr.io/${{ github.repository_owner }}/serverless-job-engine/$APP_NAME:latest
