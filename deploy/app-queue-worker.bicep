@@ -263,6 +263,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
                 eventHubName: eventHubName
                 consumerGroup: '$Default'
                 blobContainer: 'checkpoints'
+                unprocessedEventThreshold: '10'
               }
               auth: [
                 {
