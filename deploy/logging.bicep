@@ -43,6 +43,9 @@ resource grafana 'Microsoft.Dashboard/grafana@2022-08-01' = {
   identity: {
     type: 'SystemAssigned'
   }
+  sku: {
+    name: 'Standard'
+  }
   properties: {
     zoneRedundancy: 'Disabled'
     apiKey: 'Disabled'

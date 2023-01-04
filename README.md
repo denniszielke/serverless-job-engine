@@ -37,7 +37,7 @@ curl -X POST -H 'Content-Type: application/json' http://localhost:8080/publish -
 ### Manual deployment of azure resources with azure cli
 
 ```
-DEPLOYMENT_NAME="dzaca64" # here the deployment
+DEPLOYMENT_NAME="dzaca65" # here the deployment
 LOCATION="westeurope" # azure region 
 bash ./deploy-infra-bicep.sh $DEPLOYMENT_NAME $LOCATION
 ```

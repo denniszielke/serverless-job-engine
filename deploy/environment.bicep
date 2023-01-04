@@ -55,7 +55,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
-resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
+resource environment 'Microsoft.App/managedEnvironments@2022-06-01-preview' = {
   name: environmentName
   location: location
   properties: {
@@ -74,7 +74,7 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
       platformReservedCidr: '10.2.0.0/20'
       platformReservedDnsIP: '10.2.0.10'
       infrastructureSubnetId: '${vnet.id}/subnets/aca-control'
-      runtimeSubnetId: '${vnet.id}/subnets/aca-apps'
+      // runtimeSubnetId: '${vnet.id}/subnets/aca-apps'
       internal: internalOnly
     }
   }
