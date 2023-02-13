@@ -127,7 +127,7 @@ resource queueinput 'Microsoft.App/managedEnvironments/daprComponents@2022-01-01
 
 var metricsPublisherlRoleDefinitionId = '/providers/Microsoft.Authorization/roleDefinitions/3913510d-42f4-4e42-8a64-420c390055eb'
 
-resource keyVaultRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+resource metricsRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
   name: guid(subscription().subscriptionId, uami.id)
   scope: resourceGroup()
   properties: {
@@ -137,10 +137,23 @@ resource keyVaultRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-08
   }
 }
 
+// resource metricsSystemIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+//   name: guid(subscription().subscriptionId, uami.id)
+//   scope: resourceGroup()
+//   properties: {
+//     roleDefinitionId: metricsPublisherlRoleDefinitionId
+//     principalId: containerApp.identity.principalId
+//     principalType: 'ServicePrincipal'
+//   }
+// }
+
 resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
   name: 'engine'
   kind: 'containerapp'
   location: location
+  // identity: {
+  //   type: 'SystemAssigned'
+  // }
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -211,12 +224,12 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
             }
             {
               name: 'VALUE'
-              value: '456'
+              value: '4545'
             }
           ]
         }
         {
-          image: 'denniszielke/telegraf'
+          image: 'denniszielke/telegraf:opt'
           terminationGracePeriodSeconds: 5
           name: 'telegraf'
           resources: {
