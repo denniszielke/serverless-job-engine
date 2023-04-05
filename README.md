@@ -9,6 +9,7 @@ The objective is ensure the following requirements:
 - Publishin application and runtime metrics via Micrometer
 - Scrapping metrics via telegraf sidecar and publish them to Azure Monitor for Prometheus
 - Using Azure Managed Grafana to build dashboards on jobengine execution times
+- Use the workload profiles to run multiple replicas on the same host to save costs
 
 ![](/img/architecture.png)
 
