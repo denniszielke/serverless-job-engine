@@ -60,6 +60,7 @@ resource grafana 'Microsoft.Dashboard/grafana@2022-08-01' = {
   }
 }
 
+output workspaceResourceId string = logAnalyticsWorkspace.id
 output logAnalyticsCustomerId string = logAnalyticsWorkspace.properties.customerId
 output logAnalyticsSharedKey string = logAnalyticsWorkspace.listKeys().primarySharedKey
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey

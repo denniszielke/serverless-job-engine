@@ -30,4 +30,6 @@ fi
 
 
 az deployment group create -g $DEPLOYMENT_NAME -f deploy/main.bicep \
-          -p internalOnly=false
+          -p internalOnly=true -p deployAKS=true
+
+az aks get-credet

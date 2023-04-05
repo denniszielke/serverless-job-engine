@@ -37,19 +37,21 @@ curl -X POST -H 'Content-Type: application/json' http://localhost:8080/publish -
 ### Manual deployment of azure resources with azure cli
 
 ```
-DEPLOYMENT_NAME="dzaca67" # here the deployment
-LOCATION="westeurope" # azure region 
-bash ./deploy-infra-bicep.sh $DEPLOYMENT_NAME $LOCATION
+DEPLOYMENT_NAME="dzaca28" # here the deployment
+LOCATION="northcentralus" # azure region 
+bash ./deploy-aca-infra-bicep.sh $DEPLOYMENT_NAME $LOCATION
+bash ./deploy-aks-infra-bicep.sh $DEPLOYMENT_NAME $LOCATION
 ```
 
 ### Manual deployment of app into existing Azure Container App Environment with azure cli
 
 ```
-DEPLOYMENT_NAME="dzaca67" # here the deployment
+DEPLOYMENT_NAME="dzaca27" # here the deployment
 LOCATION="westeurope" # azure region 
 GHUSER="denniszielke" # replace with your user name
 IMAGE_TAG="latest"
-bash ./deploy-apps-bicep.sh $DEPLOYMENT_NAME $GHUSER $IMAGE_TAG
+bash ./deploy-aca-apps-bicep.sh $DEPLOYMENT_NAME $GHUSER $IMAGE_TAG
+
 ```
 
 ### Debug locally with azure resource components

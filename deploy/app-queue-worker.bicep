@@ -137,23 +137,10 @@ resource metricsRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-08-
   }
 }
 
-// resource metricsSystemIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
-//   name: guid(subscription().subscriptionId, uami.id)
-//   scope: resourceGroup()
-//   properties: {
-//     roleDefinitionId: metricsPublisherlRoleDefinitionId
-//     principalId: containerApp.identity.principalId
-//     principalType: 'ServicePrincipal'
-//   }
-// }
-
 resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
   name: 'engine'
   kind: 'containerapp'
   location: location
-  // identity: {
-  //   type: 'SystemAssigned'
-  // }
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -164,6 +151,7 @@ resource containerApp 'Microsoft.App/containerapps@2022-01-01-preview' = {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
     configuration: {
       activeRevisionsMode: 'single'
+      workloadProfileName: 'f4-compute'
       ingress: {
         external: true
         targetPort: 8080

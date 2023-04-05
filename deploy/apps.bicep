@@ -1,5 +1,5 @@
 param location string = resourceGroup().location
-param environmentName string = 'env-${resourceGroup().name}'
+param environmentName string = '${resourceGroup().name}'
 param imageTag string
 param containerRegistryOwner string
 
@@ -30,3 +30,16 @@ module appqueueworker 'app-queue-worker.bicep' = {
     eventHubName: eventhub.outputs.eventHubName
   }
 }
+
+// module jobqueueworker 'job-queue-worker.bicep' = {
+//   name: 'container-job-queue-worker'
+//   params: {
+//     containerRegistryPath: 'ghcr.io/${containerRegistryOwner}/serverless-job-engine/engine:${imageTag}'
+//     environmentName: environmentName
+//     storageAccountName: storage.outputs.storageAccountName
+//     storageAccountKey: storage.outputs.storageAccountKey
+//     eventHubConnectionString: eventhub.outputs.eventHubNamespaceConnectionString
+//     eventHubName: eventhub.outputs.eventHubName
+//   }
+// }
+

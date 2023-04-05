@@ -5,10 +5,9 @@
 *.log
 Issues.md
 
-components/output.yaml
-components/queue.yaml
-components/state.yaml
+components/*
 
+deploy/job-queue-worker.bicep
 output/*
 
 # BlueJ files

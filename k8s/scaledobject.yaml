@@ -1,0 +1,29 @@
+apiVersion: keda.k8s.io/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: trigger-auth-servicebus
+spec:
+  secretTargetRef:
+  - parameter: connection
+    name: appconfig
+    key: servicebus-msgqueue-connectionstring
+---
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: bindingconsumer-scaler
+  labels:
+    app: bindingconsumer
+    deploymentName: consumer
+spec:
+  scaleTargetRef:
+    deploymentName: consumer
+    minReplicaCount: 0
+  maxReplicaCount: 10
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      queueName: msgqueue
+      queueLength: '5'
+    authenticationRef:
+      name: trigger-auth-servicebus

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: engine-app
+  labels:
+    app: engine
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: engine
+  template:
+    metadata:
+      labels:
+        app: engine
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "engine"
+        dapr.io/app-port: "8080"
+    spec:
+      containers:
+      - name: message-creator
+        image: ghcr.io/{.registry}/serverless-job-engine/engine:{.tag}
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "250Mi"
+            cpu: "200m"
+          limits:
+            memory: "500Mi"
+            cpu: "300m"
+        env: 
+          - name: "PORT"
+            value: "8080"
+          - name: "VERSION"
+            value: "{.version}"
+          - name: "HttpClient__EnableRetry"
+            value: "{.enableRetry}"
+          - name: "HttpClient__EnableBreaker"
+            value: "{.enableBreaker}"

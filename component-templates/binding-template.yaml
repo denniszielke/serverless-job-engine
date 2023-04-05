@@ -1,0 +1,16 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: requests
+spec:
+  type: pubsub.azure.eventhubs
+  version: v1
+  metadata:
+  - name: connectionString      # Azure EventHubs connection string
+    value: "{.eventHubConnectionString}"
+  - name: storageAccountName    # Azure Storage Account Name
+    value: "{.storageAccount}"
+  - name: storageAccountKey     # Azure Storage Account Key
+    value: "{.storageAccessKey}"
+  - name: storageContainerName  # Azure Storage Container Name
+    value: "checkpoints"

@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: engine
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:  
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+  - host: {.dns}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: engine
+            port:
+              number: 80

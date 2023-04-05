@@ -1,6 +1,8 @@
 param location string = resourceGroup().location
-param environmentName string = 'env-${resourceGroup().name}'
-param internalOnly bool
+param environmentName string = '${resourceGroup().name}'
+param internalOnly bool = false
+param deployAKS bool = false
+param deployACA bool = false
 
 module storage 'storage.bicep' = {
   name: 'container-app-storage'
@@ -18,6 +20,13 @@ module eventhub 'eventhub.bicep' = {
   }
 }
 
+module servicebus 'servicebus.bicep' = {
+  name: 'servicebus'
+  params: {
+    serviceBusName: 'sb${environmentName}'
+  }
+}
+
 module logging 'logging.bicep' = {
   name: 'container-app-logging'
   params: {
@@ -26,13 +35,28 @@ module logging 'logging.bicep' = {
   }
 }
 
-module environment 'environment.bicep' = {
+module vnet 'vnet.bicep' = {
+  name: 'vnet'
+  params: {
+    location: location
+  }
+}
+
+module environment 'environment.bicep' = if (deployACA) {
   name: 'container-app-environment'
   params: {
-    environmentName: environmentName
+    environmentName: '${environmentName}'
     internalOnly: internalOnly
     logAnalyticsCustomerId: logging.outputs.logAnalyticsCustomerId
     logAnalyticsSharedKey: logging.outputs.logAnalyticsSharedKey
     appInsightsInstrumentationKey: logging.outputs.appInsightsInstrumentationKey
+  }
+}
+
+module cluster 'aks.bicep' = if (deployAKS) {
+  name: 'aks'
+  params: {
+    environmentName: 'aks-${environmentName}'
+    workspaceResourceId: logging.outputs.workspaceResourceId
   }
 }
