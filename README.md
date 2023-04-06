@@ -7,7 +7,7 @@ The objective is ensure the following requirements:
 - Automatic scale to 0 using Keda in Azure Container Apps
 - Ensuring that each instance is only processing one job at a time
 - Publishin application and runtime metrics via Micrometer
-- Scrapping metrics via telegraf sidecar and publish them to Azure Monitor for Prometheus
+- Scrapping metrics via telegraf sidecar and publish them to Azure Monitor
 - Using Azure Managed Grafana to build dashboards on jobengine execution times
 - Use the workload profiles to run multiple replicas on the same host to save costs
 
@@ -99,5 +99,5 @@ az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$AZUR
 ```
 
 ## Monitoring builtin and custom Java metrics using Micrometer
-Using the telegraf sidecar we can public builtin and custom metrics via Micrometer, scrap the `/q/metrics` endpoint via a dedicated telegraf sidecar, send metrics to the Azure Monitor managed service for Prometheus (https://learn.microsoft.com/en-Us/azure/azure-monitor/essentials/prometheus-metrics-overview) and query the results via PromQL in Azure Managed Grafana:
+Using the telegraf sidecar we can public builtin and custom metrics via Micrometer, scrap the `/q/metrics` endpoint via a dedicated telegraf sidecar, send metrics to the Azure Monitor and query the results via Azure Managed Grafana:
 ![](/img/graph.png)
