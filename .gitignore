@@ -7,7 +7,6 @@ Issues.md
 
 components/*
 
-deploy/job-queue-worker.bicep
 output/*
 
 # BlueJ files
